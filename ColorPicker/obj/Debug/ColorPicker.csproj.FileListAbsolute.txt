@@ -1,0 +1,17 @@
+C:\Users\JinYong\AppData\Local\Temporary Projects\ColorPicker\obj\Debug\ColorPicker.csprojResolveAssemblyReference.cache
+C:\Users\JinYong\AppData\Local\Temporary Projects\ColorPicker\obj\Debug\ColorPicker.Properties.Resources.resources
+C:\Users\JinYong\AppData\Local\Temporary Projects\ColorPicker\obj\Debug\ColorPicker.csproj.GenerateResource.Cache
+C:\Users\JinYong\AppData\Local\Temporary Projects\ColorPicker\obj\Debug\ColorPicker.Windows.MainWindow.resources
+C:\Users\JinYong\AppData\Local\Temporary Projects\ColorPicker\bin\Debug\ColorPicker.exe
+C:\Users\JinYong\AppData\Local\Temporary Projects\ColorPicker\bin\Debug\ColorPicker.pdb
+C:\Users\JinYong\AppData\Local\Temporary Projects\ColorPicker\obj\Debug\ColorPicker.exe
+C:\Users\JinYong\AppData\Local\Temporary Projects\ColorPicker\obj\Debug\ColorPicker.pdb
+F:\바탕화면\프로그래밍\VisualStudio_Develop\ColorPicker\ColorPicker\obj\Debug\ColorPicker.exe
+F:\바탕화면\프로그래밍\VisualStudio_Develop\ColorPicker\ColorPicker\obj\Debug\ColorPicker.pdb
+F:\바탕화면\프로그래밍\VisualStudio_Develop\ColorPicker\ColorPicker\bin\Debug\ColorPicker.exe
+F:\바탕화면\프로그래밍\VisualStudio_Develop\ColorPicker\ColorPicker\bin\Debug\ColorPicker.pdb
+F:\바탕화면\프로그래밍\VisualStudio_Develop\ColorPicker\ColorPicker\obj\Debug\ColorPicker.csprojResolveAssemblyReference.cache
+F:\바탕화면\프로그래밍\VisualStudio_Develop\ColorPicker\ColorPicker\obj\Debug\ColorPicker.Windows.MainWindow.resources
+F:\바탕화면\프로그래밍\VisualStudio_Develop\ColorPicker\ColorPicker\obj\Debug\ColorPicker.Properties.Resources.resources
+F:\바탕화면\프로그래밍\VisualStudio_Develop\ColorPicker\ColorPicker\obj\Debug\ColorPicker.csproj.GenerateResource.Cache
+F:\바탕화면\프로그래밍\VisualStudio_Develop\ColorPicker\ColorPicker\obj\Debug\ColorPicker.Windows.Base.ResizeWindow.resources

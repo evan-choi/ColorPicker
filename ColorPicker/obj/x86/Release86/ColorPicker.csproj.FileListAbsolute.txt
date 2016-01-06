@@ -1,0 +1,6 @@
+F:\바탕화면\프로그래밍\VisualStudio_Develop\ColorPicker\ColorPicker\bin\x86\Release86\ColorPicker.exe
+F:\바탕화면\프로그래밍\VisualStudio_Develop\ColorPicker\ColorPicker\obj\x86\Release86\ColorPicker.Windows.Base.ResizeWindow.resources
+F:\바탕화면\프로그래밍\VisualStudio_Develop\ColorPicker\ColorPicker\obj\x86\Release86\ColorPicker.Windows.MainWindow.resources
+F:\바탕화면\프로그래밍\VisualStudio_Develop\ColorPicker\ColorPicker\obj\x86\Release86\ColorPicker.Properties.Resources.resources
+F:\바탕화면\프로그래밍\VisualStudio_Develop\ColorPicker\ColorPicker\obj\x86\Release86\ColorPicker.csproj.GenerateResource.Cache
+F:\바탕화면\프로그래밍\VisualStudio_Develop\ColorPicker\ColorPicker\obj\x86\Release86\ColorPicker.exe
