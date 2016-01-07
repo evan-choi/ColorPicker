@@ -38,6 +38,9 @@
             this.DoubleBuffered = true;
             this.Name = "LDColorPlate";
             this.Size = new System.Drawing.Size(131, 268);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.LDColorPlate_MouseDown);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.LDColorPlate_MouseMove);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.LDColorPlate_MouseUp);
             this.ResumeLayout(false);
 
         }

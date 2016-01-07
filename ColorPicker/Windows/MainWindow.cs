@@ -22,6 +22,13 @@ namespace ColorPicker.Windows
 
             this.Shown += MainWindow_Shown;
             this.zoomSlider.Scroll += ZoomSlider_Scroll;
+
+            this.ldcPlate.SelectedColorChanged += LdcPlate_SelectedColorChanged;
+        }
+
+        private void LdcPlate_SelectedColorChanged(object sender, Color value)
+        {
+            SetPickedColor(value);
         }
 
         private void ZoomSlider_Scroll(object sender, int value)
