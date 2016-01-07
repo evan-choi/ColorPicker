@@ -68,13 +68,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\LDColorPlate.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\LDColorPlate.Designer.cs">
+      <DependentUpon>LDColorPlate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SelectableLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Slider.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Slider.Designer.cs">
+      <DependentUpon>Slider.cs</DependentUpon>
+    </Compile>
     <Compile Include="Input\IHook.cs" />
     <Compile Include="Input\KeyboardHook.cs" />
+    <Compile Include="Input\Mouse.cs" />
     <Compile Include="Input\MouseHook.cs" />
     <Compile Include="Native\NativeConstants.cs" />
     <Compile Include="Native\NativeEnums.cs" />
     <Compile Include="Native\NativeMethods.cs" />
     <Compile Include="Native\NativeStructs.cs" />
+    <Compile Include="Utils\Color\ColorUtils.cs" />
+    <Compile Include="Utils\Color\HEXColor.cs" />
+    <Compile Include="Utils\Color\HSVColor.cs" />
+    <Compile Include="Utils\Color\HSLColor.cs" />
+    <Compile Include="Utils\ScreenCapture.cs" />
+    <Compile Include="Utils\Setting.cs" />
     <Compile Include="Windows\Base\DropShadowWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -101,6 +123,12 @@
     <Compile Include="Windows\SettingWindow.Designer.cs">
       <DependentUpon>SettingWindow.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Controls\LDColorPlate.resx">
+      <DependentUpon>LDColorPlate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Slider.resx">
+      <DependentUpon>Slider.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Windows\Base\ResizeWindow.resx">
       <DependentUpon>ResizeWindow.cs</DependentUpon>
     </EmbeddedResource>
@@ -135,6 +163,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\minimize.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\setting.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

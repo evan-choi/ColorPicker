@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace ColorPicker.Windows.Base
@@ -19,8 +18,7 @@ namespace ColorPicker.Windows.Base
                 this.Image = image;
             }
         }
-
-        public Rectangle WorkingArea { get; set; }
+        
         public int CaptionHeight { get; set; } = 30;
 
         private bool _iconVisible = true;
@@ -40,11 +38,18 @@ namespace ColorPicker.Windows.Base
         private bool mActivated;
         private Box mcBoxExit = new Box(new Rectangle(0, 0, 20, 20), Properties.Resources.exit);
         private Box mcBoxMinimize = new Box(new Rectangle(0, 0, 20, 20), Properties.Resources.minimize);
+        private Box mcBoxSetting = new Box(new Rectangle(0, 0, 20, 20), Properties.Resources.setting);
 
         public SkinWindow()
         {
             mcBoxExit.Event = new Action<object>(Exit_Click);
             mcBoxMinimize.Event = new Action<object>(Minimize_Click);
+            mcBoxSetting.Event = new Action<object>(OnSetting_Click);
+        }
+
+        protected virtual void OnSetting_Click(object obj)
+        {
+            MessageBox.Show("A");
         }
 
         private void Minimize_Click(object obj)
@@ -56,17 +61,7 @@ namespace ColorPicker.Windows.Base
         {
             this.Close();
         }
-
-        protected override void OnLoad(EventArgs e)
-        {
-            if (WorkingArea.X == 0 && WorkingArea.Y == 0)
-            {
-                WorkingArea = this.Bounds;
-            }
-
-            base.OnLoad(e);
-        }
-
+        
         protected override void OnPaint(PaintEventArgs e)
         {
             Graphics g = e.Graphics;
@@ -107,6 +102,7 @@ namespace ColorPicker.Windows.Base
         {
             DrawBox(g, mcBoxExit);
             DrawBox(g, mcBoxMinimize);
+            DrawBox(g, mcBoxSetting);
         }
 
         private void DrawBox(Graphics g, Box box)
@@ -146,7 +142,7 @@ namespace ColorPicker.Windows.Base
         {
             if (direction == ResizeDirection.Center && e.Y > CaptionHeight) return;
 
-            Box[] boxs = { mcBoxExit, mcBoxMinimize };
+            Box[] boxs = { mcBoxExit, mcBoxMinimize, mcBoxSetting };
             foreach (Box box in boxs)
             {
                 if (IntersectWith(box.Bounds, new Point(e.X, e.Y))) return;
@@ -164,13 +160,13 @@ namespace ColorPicker.Windows.Base
         {
             MouseEventArgs me = (MouseEventArgs)e;
 
-            Box[] boxs = { mcBoxExit, mcBoxMinimize };
+            Box[] boxs = { mcBoxExit, mcBoxMinimize, mcBoxSetting };
 
             foreach (Box box in boxs)
             {
                 if (IntersectWith(box.Bounds, new Point(me.X, me.Y)))
                 {
-                    box.Event.Invoke(box);
+                    box.Event?.Invoke(box);
                     return;
                 }
             }
@@ -187,6 +183,9 @@ namespace ColorPicker.Windows.Base
 
             Point mPt = new Point(ePt.X - mcBoxMinimize.Bounds.Width - 5, CaptionHeight / 2 - mcBoxMinimize.Bounds.Height / 2);
             mcBoxMinimize.Bounds = new Rectangle(mPt, mcBoxMinimize.Bounds.Size);
+
+            Point sPt = new Point(mPt.X - mcBoxSetting.Bounds.Width - 5, CaptionHeight / 2 - mcBoxSetting.Bounds.Height / 2);
+            mcBoxSetting.Bounds = new Rectangle(sPt, mcBoxSetting.Bounds.Size);
 
             this.Invalidate();
         }

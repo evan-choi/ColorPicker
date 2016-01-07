@@ -33,6 +33,15 @@ namespace ColorPicker.Input
             }
         }
 
+        private Point _position;
+        public Point LastPosition
+        {
+            get
+            {
+                return _position;
+            }
+        }
+
         private IntPtr mHookPtr;
         private NativeMethods.HookProc mHookProc;
 
@@ -65,7 +74,8 @@ namespace ColorPicker.Input
                 {
                     var ms = (NativeStructs.MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(NativeStructs.MSLLHOOKSTRUCT));
 
-                    OnMouseMove?.Invoke(this, new Point(ms.pt.x, ms.pt.y));
+                    _position = new Point(ms.pt.x, ms.pt.y);
+                    OnMouseMove?.Invoke(this, _position);
                 }
             }
             catch (Exception ex)

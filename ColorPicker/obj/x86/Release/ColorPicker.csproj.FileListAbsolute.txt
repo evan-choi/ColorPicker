@@ -6,3 +6,11 @@ F:\바탕화면\프로그래밍\VisualStudio_Develop\ColorPicker\ColorPicker\obj
 F:\바탕화면\프로그래밍\VisualStudio_Develop\ColorPicker\ColorPicker\obj\x86\Release\ColorPicker.exe
 F:\바탕화면\프로그래밍\VisualStudio_Develop\ColorPicker\ColorPicker\obj\x86\Release\ColorPicker.csprojResolveAssemblyReference.cache
 C:\Users\JinYong\Source\Repos\colorpicker\ColorPicker\obj\x86\Release\ColorPicker.exe
+C:\Users\JinYong\Source\Repos\colorpicker\ColorPicker\bin\x86\Release\ColorPicker.exe
+C:\Users\JinYong\Source\Repos\colorpicker\ColorPicker\obj\x86\Release\ColorPicker.csprojResolveAssemblyReference.cache
+C:\Users\JinYong\Source\Repos\colorpicker\ColorPicker\obj\x86\Release\ColorPicker.Windows.Base.ResizeWindow.resources
+C:\Users\JinYong\Source\Repos\colorpicker\ColorPicker\obj\x86\Release\ColorPicker.Windows.MainWindow.resources
+C:\Users\JinYong\Source\Repos\colorpicker\ColorPicker\obj\x86\Release\ColorPicker.Properties.Resources.resources
+C:\Users\JinYong\Source\Repos\colorpicker\ColorPicker\obj\x86\Release\ColorPicker.csproj.GenerateResource.Cache
+C:\Users\JinYong\Source\Repos\colorpicker\ColorPicker\obj\x86\Release\ColorPicker.Controls.Slider.resources
+C:\Users\JinYong\Source\Repos\colorpicker\ColorPicker\obj\x86\Release\ColorPicker.Controls.LDColorPlate.resources

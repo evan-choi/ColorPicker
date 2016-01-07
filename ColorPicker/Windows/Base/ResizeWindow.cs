@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 
 using ColorPicker.Native;
+using System.Drawing;
 
 namespace ColorPicker.Windows.Base
 {
@@ -79,12 +80,11 @@ namespace ColorPicker.Windows.Base
 
         private void SetWindowStyle()
         {
-            this.FormBorderStyle = FormBorderStyle.Sizable;
             NativeEnums.WindowStyles wStyle = NativeMethods.GetWindowLong(this.Handle, NativeEnums.WindowLongFlags.GWL_STYLE);
 
-            wStyle &= ~NativeEnums.WindowStyles.WS_CAPTION;
-            wStyle &= ~NativeEnums.WindowStyles.WS_SIZEFRAME;
-
+            wStyle |= NativeEnums.WindowStyles.WS_SYSMENU;
+            wStyle |= NativeEnums.WindowStyles.WS_MINIMIZEBOX;
+            
             NativeMethods.SetWindowLong(this.Handle, NativeEnums.WindowLongFlags.GWL_STYLE, wStyle);
         }
 
@@ -117,12 +117,15 @@ namespace ColorPicker.Windows.Base
 
         protected virtual void OnResizing(ResizeDirection direction, MouseEventArgs e)
         {
-            if (ResizeEnable && Direction_Drag.ContainsKey(direction))
+            if (Direction_Drag.ContainsKey(direction))
             {
-                var v = Direction_Drag[direction];
+                if (ResizeEnable)
+                {
+                    var v = Direction_Drag[direction];
 
-                NativeMethods.ReleaseCapture();
-                NativeMethods.SendMessage(this.Handle, (uint)NativeEnums.WM.SYSCOMMAND, new IntPtr((uint)v), IntPtr.Zero);
+                    NativeMethods.ReleaseCapture();
+                    NativeMethods.SendMessage(this.Handle, (uint)NativeEnums.WM.SYSCOMMAND, new IntPtr((uint)v), IntPtr.Zero);
+                }
             }
             else
             {
