@@ -14,16 +14,7 @@ namespace ColorPicker.Input
     {
         public event MouseMoveHandler OnMouseMove;
         public delegate void MouseMoveHandler(MouseHook sender, Point pt);
-
-        private IntPtr _Handle;
-        public IntPtr Handle
-        {
-            get
-            {
-                return _Handle;
-            }
-        }
-
+        
         private bool _hooked;
         public bool IsHooked
         {
@@ -44,12 +35,7 @@ namespace ColorPicker.Input
 
         private IntPtr mHookPtr;
         private NativeMethods.HookProc mHookProc;
-
-        public MouseHook(IntPtr hwnd)
-        {
-            _Handle = hwnd;
-        }
-
+        
         public bool Hook()
         {
             mHookProc = new NativeMethods.HookProc(_Hook);
@@ -83,7 +69,7 @@ namespace ColorPicker.Input
                 MessageBox.Show(ex.ToString());
             }
 
-            return NativeMethods.CallNextHookEx(_Handle, code, wParam, lParam);
+            return NativeMethods.CallNextHookEx(mHookPtr, code, wParam, lParam);
         }
 
         public bool UnHook()

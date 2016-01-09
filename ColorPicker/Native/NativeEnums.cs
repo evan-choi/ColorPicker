@@ -453,5 +453,16 @@ namespace ColorPicker.Native
             WHITENESS = 0x00FF0062,
             CAPTUREBLT = 0x40000000
         }
+
+
+        [Flags]
+        public enum KBDLLHOOKSTRUCTFlags : uint
+        {
+            LLKHF_DOWN = 0x00,
+            LLKHF_EXTENDED = 0x01,
+            LLKHF_INJECTED = 0x10,
+            LLKHF_ALTDOWN = 0x20,
+            LLKHF_UP = 0x80,
+        }
     }
 }

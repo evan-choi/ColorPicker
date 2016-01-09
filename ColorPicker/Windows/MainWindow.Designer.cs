@@ -177,7 +177,7 @@
             this.recordView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.recordView.Location = new System.Drawing.Point(12, 220);
             this.recordView.Name = "recordView";
-            this.recordView.Size = new System.Drawing.Size(276, 164);
+            this.recordView.Size = new System.Drawing.Size(276, 163);
             this.recordView.TabIndex = 21;
             this.recordView.UseCompatibleStateImageBehavior = false;
             this.recordView.View = System.Windows.Forms.View.Details;
@@ -195,7 +195,7 @@
             this.extender.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.extender.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.extender.Image = global::ColorPicker.Properties.Resources.arrow_up;
+            this.extender.Image = global::ColorPicker.Properties.Resources.arrow_down;
             this.extender.Location = new System.Drawing.Point(135, 389);
             this.extender.Name = "extender";
             this.extender.Size = new System.Drawing.Size(30, 7);

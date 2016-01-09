@@ -6,7 +6,6 @@ namespace ColorPicker.Input
 {
     public interface IHook
     {
-        IntPtr Handle { get; }
         bool IsHooked { get; }
 
         bool Hook();

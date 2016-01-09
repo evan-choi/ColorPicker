@@ -1,5 +1,6 @@
 ﻿using ColorPicker.Input;
 using ColorPicker.Utils;
+using ColorPicker.Utils.Hotkey;
 using ColorPicker.Windows.Base;
 
 using System;
@@ -14,10 +15,12 @@ namespace ColorPicker.Windows
     public partial class MainWindow : SkinWindow
     {
         #region [ 전역 변수 ]
+        private bool mPause = false;
+
         private BackgroundWorker mWorker;
         private ImageList cList;
 
-        private bool mExtended = true;
+        private bool mExtended = false;
         private System.Timers.Timer mAnimateTimer;
         #endregion
 
@@ -25,23 +28,35 @@ namespace ColorPicker.Windows
         public MainWindow()
         {
             InitializeComponent();
-
-            GlobalException.Init();
-            
             InitWorker();
+            InitToolTip();
+            InitHotKey();
+            
+            GlobalException.Init();
             
             cList = new ImageList();
             cList.ImageSize = new Size(16, 16);
-            recordView.SmallImageList = cList; 
+            recordView.SmallImageList = cList;
 
+            this.Height = this.MinimumSize.Height;
             this.Shown += MainWindow_Shown;
-            this.zoomSlider.Scroll += ZoomSlider_Scroll;
-            this.ldcPlate.SelectedColorChanged += LdcPlate_SelectedColorChanged;
-            this.extender.Click += Extender_Click;
+            this.FormClosing += MainWindow_FormClosing;
+
+            zoomSlider.Scroll += ZoomSlider_Scroll;
+            ldcPlate.SelectedColorChanged += LdcPlate_SelectedColorChanged;
+            extender.Click += Extender_Click;
+        }
+
+
+        private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            mWorker.CancelAsync();
+            e.Cancel = true;
         }
 
         private void MainWindow_Shown(object sender, EventArgs e)
         {
+            mWorker.WorkerSupportsCancellation = true;
             mWorker.RunWorkerAsync();
         }
 
@@ -49,115 +64,179 @@ namespace ColorPicker.Windows
         {
             mWorker = new BackgroundWorker();
             mWorker.DoWork += MWorkThread_DoWork;
+            mWorker.RunWorkerCompleted += MWorker_RunWorkerCompleted;
+        }
+
+        private void InitToolTip()
+        {
+            ToolTipManager.SetToolTip(extender, "색상 기록을 확장합니다.");
+            ToolTipManager.SetToolTip(lbl_HTML, "색상을 HEX로 표현한 값 입니다.");
+            ToolTipManager.SetToolTip(lbl_RGB, "색상을 RGB로 표현한 값 입니다.");
+            ToolTipManager.SetToolTip(lbl_HSL, "색상을 HSL로 표현한 값 입니다.");
+            ToolTipManager.SetToolTip(lbl_HSV, "색상을 HSB로 표현한 값 입니다.");
+            ToolTipManager.SetToolTip(chkGrid, "캡쳐영역에 격자를 표시합니다.");
+            ToolTipManager.SetToolTip(chkSemi, "키보드 방향키로 마우스를 미세조정합니다.");
+            ToolTipManager.SetToolTip(ldcPlate, "클릭하여 생삭의 밝기를 조절할 수 있습니다.");
+            ToolTipManager.SetToolTip(zoomSlider, "스크롤하여 확대를할 수 있습니다.");
+        }
+
+        // 임시 핫키 세팅과 연동 필요함
+        private void InitHotKey()
+        {
+            HotkeyManager.Register("Pause", new HotKey()
+            {
+                Keys = new Keys[] { Keys.F1 },
+                Action = () =>
+                {
+                    mPause = !mPause;
+                }
+            });
+
+            HotkeyManager.Register("Zoom_IN", new HotKey()
+            {
+                Keys = new Keys[] { Keys.Add },
+                Action = () =>
+                {
+                    zoomSlider.Value += 1;
+                }
+            });
+
+            HotkeyManager.Register("Zoom_OUT", new HotKey()
+            {
+                Keys = new Keys[] { Keys.Subtract },
+                Action = () =>
+                {
+                    zoomSlider.Value -= 1;
+                }
+            });
+
+            HotkeyManager.Register("Color_Snapshot", new HotKey()
+            {
+                Keys = new Keys[] { Keys.F2 },
+                Action = () =>
+                {
+                    AddColor(RGBColor.FromColor(ldcPlate.BaseColor));
+                }
+            });
         }
         #endregion
 
         #region [ 작업 ]
+        private void MWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Environment.Exit(1);
+        }
+
         private void MWorkThread_DoWork(object sender, DoWorkEventArgs e)
         {
             using (var mre = new ManualResetEvent(false))
             {
-                while (true)
+                while (!mWorker.CancellationPending)
                 {
-                    // ViewSize
-                    Size vSize = new Size(100, 100);
-
-                    // View Half Size
-                    Size vhSize = new Size(vSize.Width / 2, vSize.Height / 2);
-
-                    // Capture Size
-                    Size scSize = new Size(SelectOdd(vSize.Width / Setting.Zoom), SelectOdd(vSize.Height / Setting.Zoom));
-
-                    // ZoomBuffer Size
-                    Size zbSize = new Size((int)(scSize.Width * Setting.Zoom), (int)(scSize.Height * Setting.Zoom));
-
-                    // Remain Size
-                    Size rmSize = zbSize - vSize;
-
-                    // Capture Area
-                    Point mPt = Mouse.Position;
-                    Rectangle area = new Rectangle(mPt.X - scSize.Width / 2, mPt.Y - scSize.Height / 2, scSize.Width, scSize.Height);
-
-                    // Capture
-                    Bitmap buffer = ScreenCapture.Capture(area);
-
-                    // Picked Color
-                    Color pColor = buffer.GetPixel(area.Width / 2, area.Height / 2);
-
-                    // ViewBox Processing
-                    Bitmap view = new Bitmap(vSize.Width, vSize.Height);
-                    using (Graphics g = Graphics.FromImage(view))
+                    if (!mPause)
                     {
-                        Point dPos = new Point(-rmSize.Width / 2, -rmSize.Height / 2);
-
-                        g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                        g.InterpolationMode = InterpolationMode.NearestNeighbor;
-
-                        g.DrawImage(buffer, new Rectangle(dPos, zbSize));
-
-                        // Grid Processing
-                        if (Setting.ShowGrid)
-                        {
-                            using (SolidBrush sb = new SolidBrush(Color.FromArgb(100, Color.White)))
-                            {
-                                using (Pen p = new Pen(sb))
-                                {
-                                    int z = (int)Setting.Zoom;
-
-                                    for (int x = dPos.X; x <= vSize.Width; x += z)
-                                    {
-                                        if (x >= 0)
-                                        {
-                                            g.DrawLine(p, new PointF(x, 0), new PointF(x, vSize.Height));
-                                        }
-                                    }
-
-                                    for (int y = dPos.Y; y <= vSize.Height; y += z)
-                                    {
-                                        if (y >= 0)
-                                        {
-                                            g.DrawLine(p, new PointF(0, y), new PointF(vSize.Width, y));
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        // CrossLine Processing
-                        for (int x = 0; x < vSize.Width; x++)
-                        {
-                            Color px = view.GetPixel(x, vhSize.Height);
-
-                            view.SetPixel(x, vhSize.Height, ColorUtils.Invert(px));
-                        }
-
-                        for (int y = 0; y < vSize.Height; y++)
-                        {
-                            Color px = view.GetPixel(vhSize.Width, y);
-
-                            view.SetPixel(vhSize.Width, y, ColorUtils.Invert(px));
-                        }
+                        Processing();
                     }
 
-                    buffer.Dispose();
-
-                    SetPickedColor(pColor);
-
-                    UIInvoke(() =>
-                    {
-                        ldcPlate.BaseColor = pColor;
-
-                        viewBox.Image?.Dispose();
-                        viewBox.Image = view;
-                    });
-                    
-                    mre.Reset();
-                    mre.Set();
                     mre.WaitOne(10, true);
                 }
             }
         }
 
+        private void Processing()
+        {
+            // ViewSize
+            Size vSize = new Size(100, 100);
+
+            // View Half Size
+            Size vhSize = new Size(vSize.Width / 2, vSize.Height / 2);
+
+            // Capture Size
+            Size scSize = new Size(SelectOdd(vSize.Width / Setting.Zoom), SelectOdd(vSize.Height / Setting.Zoom));
+
+            // ZoomBuffer Size
+            Size zbSize = new Size((int)(scSize.Width * Setting.Zoom), (int)(scSize.Height * Setting.Zoom));
+
+            // Remain Size
+            Size rmSize = zbSize - vSize;
+
+            // Capture Area
+            Point mPt = Mouse.Position;
+            Rectangle area = new Rectangle(mPt.X - scSize.Width / 2, mPt.Y - scSize.Height / 2, scSize.Width, scSize.Height);
+
+            // Capture
+            Bitmap buffer = ScreenCapture.Capture(area);
+
+            // Picked Color
+            Color pColor = buffer.GetPixel(area.Width / 2, area.Height / 2);
+
+            // ViewBox Processing
+            Bitmap view = new Bitmap(vSize.Width, vSize.Height);
+            using (Graphics g = Graphics.FromImage(view))
+            {
+                Point dPos = new Point(-rmSize.Width / 2, -rmSize.Height / 2);
+
+                g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                g.InterpolationMode = InterpolationMode.NearestNeighbor;
+
+                g.DrawImage(buffer, new Rectangle(dPos, zbSize));
+
+                // Grid Processing
+                if (Setting.ShowGrid)
+                {
+                    using (SolidBrush sb = new SolidBrush(Color.FromArgb(100, Color.White)))
+                    {
+                        using (Pen p = new Pen(sb))
+                        {
+                            int z = (int)Setting.Zoom;
+
+                            for (int x = dPos.X; x <= vSize.Width; x += z)
+                            {
+                                if (x >= 0)
+                                {
+                                    g.DrawLine(p, new PointF(x, 0), new PointF(x, vSize.Height));
+                                }
+                            }
+
+                            for (int y = dPos.Y; y <= vSize.Height; y += z)
+                            {
+                                if (y >= 0)
+                                {
+                                    g.DrawLine(p, new PointF(0, y), new PointF(vSize.Width, y));
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // CrossLine Processing
+                for (int x = 0; x < vSize.Width; x++)
+                {
+                    Color px = view.GetPixel(x, vhSize.Height);
+
+                    view.SetPixel(x, vhSize.Height, ColorUtils.Invert(px));
+                }
+
+                for (int y = 0; y < vSize.Height; y++)
+                {
+                    Color px = view.GetPixel(vhSize.Width, y);
+
+                    view.SetPixel(vhSize.Width, y, ColorUtils.Invert(px));
+                }
+            }
+
+            buffer.Dispose();
+
+            SetPickedColor(pColor);
+
+            UIInvoke(() =>
+            {
+                ldcPlate.BaseColor = pColor;
+
+                viewBox.Image?.Dispose();
+                viewBox.Image = view;
+            });
+        }
 
         private void SetPickedColor(Color pColor)
         {

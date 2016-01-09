@@ -159,8 +159,11 @@ namespace ColorPicker.Controls
                     value = _Minimum;
                 if (value > _Maximum)
                     value = _Maximum;
+
                 _Value = value;
                 GraphicUpdate(selectedStyle, _Value);
+
+                Scroll?.Invoke(this, Value);
             }
         }
 
