@@ -7,7 +7,11 @@ namespace ColorPicker.Utils
     {
         public static Color Invert(Color c)
         {
-            return Color.FromArgb(255 - c.R, 255 - c.G, 255 - c.B);
+            byte r = (byte)Math.Sqrt(ushort.MaxValue - Math.Pow(c.R, 2));
+            byte g = (byte)Math.Sqrt(ushort.MaxValue - Math.Pow(c.G, 2));
+            byte b = (byte)Math.Sqrt(ushort.MaxValue - Math.Pow(c.B, 2));
+
+            return Color.FromArgb(r, g, b);
         }
     }
 }

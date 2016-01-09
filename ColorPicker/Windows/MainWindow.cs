@@ -278,20 +278,17 @@ namespace ColorPicker.Windows
         {
             UIInvoke(() =>
             {
-                if (recordView.Items.Count < 100)
-                {
-                    Bitmap icon = DrawColorIcon(c.ToColor());
-                    cList.Images.Add(icon);
+                Bitmap icon = DrawColorIcon(c.ToColor());
+                cList.Images.Add(icon);
 
-                    ListViewItem itm = new ListViewItem();
-                    itm.SubItems.Add(c.ToString());
-                    itm.SubItems.Add(c.Type.ToString());
+                ListViewItem itm = new ListViewItem();
+                itm.SubItems.Add(c.ToString());
+                itm.SubItems.Add(c.Type.ToString());
 
-                    itm.ImageIndex = cList.Images.Count - 1;
+                itm.ImageIndex = cList.Images.Count - 1;
 
-                    recordView.Items.Add(itm);
-                    recordView.EnsureVisible(recordView.Items.Count - 1);
-                }
+                recordView.Items.Add(itm);
+                recordView.EnsureVisible(recordView.Items.Count - 1);
             });
         }
 
