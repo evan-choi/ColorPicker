@@ -9,3 +9,4 @@ C:\Users\JinYong\Source\Repos\colorpicker\ColorPicker\obj\x86\Debug\ColorPicker.
 C:\Users\JinYong\Source\Repos\colorpicker\ColorPicker\obj\x86\Debug\ColorPicker.exe
 C:\Users\JinYong\Source\Repos\colorpicker\ColorPicker\obj\x86\Debug\ColorPicker.pdb
 C:\Users\JinYong\Source\Repos\colorpicker\ColorPicker\obj\x86\Debug\ColorPicker.csprojResolveAssemblyReference.cache
+C:\Users\JinYong\Source\Repos\colorpicker\ColorPicker\obj\x86\Debug\ColorPicker.Windows.ErrorWindow.resources

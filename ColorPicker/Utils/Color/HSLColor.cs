@@ -3,12 +3,20 @@ using System.Drawing;
 
 namespace ColorPicker.Utils
 {
-    public struct HSLColor
+    public struct HSLColor : IColor
     {
         public float Hue { get; set; }
         public float Saturation { get; set; }
         public float Lightness { get; set; }
-        
+
+        public ColorType Type
+        {
+            get
+            {
+                return ColorType.HSL;
+            }
+        }
+
         public HSLColor(float h, float s, float l)
         {
             Hue = h;
@@ -89,6 +97,11 @@ namespace ColorPicker.Utils
         public static HSLColor FromColor(Color c)
         {
             return new HSLColor(c);
+        }
+
+        public override string ToString()
+        {
+            return $"HSL ({(int)Hue}, {(int)(Saturation * 100)}%, {(int)(Lightness * 100)}%)";
         }
     }
 }

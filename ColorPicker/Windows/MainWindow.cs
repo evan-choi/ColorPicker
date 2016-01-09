@@ -7,33 +7,37 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace ColorPicker.Windows
 {
     public partial class MainWindow : SkinWindow
     {
+        #region [ 전역 변수 ]
         private BackgroundWorker mWorker;
-        
+        private ImageList cList;
+
+        private bool mExtended = true;
+        private System.Timers.Timer mAnimateTimer;
+        #endregion
+
+        #region [ 초기화 ]
         public MainWindow()
         {
             InitializeComponent();
+
+            GlobalException.Init();
             
             InitWorker();
+            
+            cList = new ImageList();
+            cList.ImageSize = new Size(16, 16);
+            recordView.SmallImageList = cList; 
 
             this.Shown += MainWindow_Shown;
             this.zoomSlider.Scroll += ZoomSlider_Scroll;
-
             this.ldcPlate.SelectedColorChanged += LdcPlate_SelectedColorChanged;
-        }
-
-        private void LdcPlate_SelectedColorChanged(object sender, Color value)
-        {
-            SetPickedColor(value);
-        }
-
-        private void ZoomSlider_Scroll(object sender, int value)
-        {
-            Setting.Zoom = (float)value;
+            this.extender.Click += Extender_Click;
         }
 
         private void MainWindow_Shown(object sender, EventArgs e)
@@ -46,7 +50,9 @@ namespace ColorPicker.Windows
             mWorker = new BackgroundWorker();
             mWorker.DoWork += MWorkThread_DoWork;
         }
+        #endregion
 
+        #region [ 작업 ]
         private void MWorkThread_DoWork(object sender, DoWorkEventArgs e)
         {
             using (var mre = new ManualResetEvent(false))
@@ -135,22 +141,23 @@ namespace ColorPicker.Windows
 
                     buffer.Dispose();
 
+                    SetPickedColor(pColor);
+
                     UIInvoke(() =>
                     {
-                        SetPickedColor(pColor);
-
                         ldcPlate.BaseColor = pColor;
 
                         viewBox.Image?.Dispose();
                         viewBox.Image = view;
                     });
-
+                    
                     mre.Reset();
                     mre.Set();
                     mre.WaitOne(10, true);
                 }
             }
         }
+
 
         private void SetPickedColor(Color pColor)
         {
@@ -169,16 +176,158 @@ namespace ColorPicker.Windows
 
             HSLColor hlc = HSLColor.FromColor(pColor);
             HSVColor hvc = HSVColor.FromColor(pColor);
-
-            lbl_HTML.Text = $"#{HEXColor.FromColor(pColor).Html}";
-            lbl_RGB.Text = $"RGB ({pColor.R}, {pColor.G}, {pColor.B})";
-            lbl_HSL.Text = $"HSL ({(int)hlc.Hue}, {(int)(hlc.Saturation * 100)}%, {(int)(hlc.Lightness * 100)}%)";
-            lbl_HSV.Text = $"HSB ({(int)hvc.Hue}, {(int)(hvc.Saturation * 100)}%, {(int)(hvc.Value * 100)}%)";
+            RGBColor rgc = RGBColor.FromColor(pColor);
+            HEXColor hxc = HEXColor.FromColor(pColor);
+            
+            lbl_HTML.Text = hxc.ToString();
+            lbl_RGB.Text = rgc.ToString();
+            lbl_HSL.Text = hlc.ToString();
+            lbl_HSV.Text = hvc.ToString();
 
             colorBox.Image?.Dispose();
             colorBox.Image = cView;
         }
 
+        private void LdcPlate_SelectedColorChanged(object sender, Color value)
+        {
+            SetPickedColor(value);
+        }
+        #endregion
+
+        #region [ 기록 ]
+        private void AddColor(IColor c)
+        {
+            UIInvoke(() =>
+            {
+                if (recordView.Items.Count < 100)
+                {
+                    Bitmap icon = DrawColorIcon(c.ToColor());
+                    cList.Images.Add(icon);
+
+                    ListViewItem itm = new ListViewItem();
+                    itm.SubItems.Add(c.ToString());
+                    itm.SubItems.Add(c.Type.ToString());
+
+                    itm.ImageIndex = cList.Images.Count - 1;
+
+                    recordView.Items.Add(itm);
+                    recordView.EnsureVisible(recordView.Items.Count - 1);
+                }
+            });
+        }
+
+        private Bitmap DrawColorIcon(Color c)
+        {
+            Bitmap icon = new Bitmap(16, 16);
+
+            using (Graphics g = Graphics.FromImage(icon))
+            {
+                g.Clear(c);
+
+                using (SolidBrush sb = new SolidBrush(ColorUtils.Invert(c)))
+                {
+                    using (Pen p = new Pen(sb))
+                    {
+                        g.DrawRectangle(p, new Rectangle(1, 1, 13, 13));
+                    }
+                }
+            }
+
+            return icon;
+        }
+
+        #endregion
+
+        #region [ 윈도우 확장 ]
+        private void Extender_Click(object sender, EventArgs e)
+        {
+            if (mExtended)
+            {
+                UnExtend();
+            }
+            else
+            {
+                Extend();
+            }
+
+            extender.Image = (mExtended ? Properties.Resources.arrow_down : Properties.Resources.arrow_up);
+
+            mExtended = !mExtended;
+        }
+
+        private void Extend()
+        {
+            StopAnimation();
+            EaseCircleOut(this.Height, this.MaximumSize.Height, 500);
+        }
+
+        private void UnExtend()
+        {
+            StopAnimation();
+            EaseCircleOut(this.Height, this.MinimumSize.Height, 500);
+        }
+
+        private void EaseCircleOut(int from, int to, int duration)
+        {
+            DateTime stDt = DateTime.Now;
+
+            mAnimateTimer = new System.Timers.Timer() { Interval = 10 };
+            mAnimateTimer.Elapsed += (s, e) =>
+            {
+                TimeSpan elapsed = DateTime.Now - stDt;
+                double time = Math.Min(elapsed.TotalMilliseconds, duration);
+                double v = easeOut_Circle(time, from, to - from, duration);
+                
+                this.Height = (int)v;
+
+                if (time >= duration) StopAnimation();
+            };
+
+            mAnimateTimer.Start();
+        }
+
+        private void StopAnimation()
+        {
+            if (mAnimateTimer != null)
+            {
+                mAnimateTimer.Stop();
+
+                mAnimateTimer.Dispose();
+                mAnimateTimer = null;
+            }
+        }
+        
+        private double easeOut_Circle(double time, double from, double increase, int duration)
+        {
+            double tt = time;
+            return increase * Math.Sqrt(1 - (InlineAssignHelper<double>(ref tt, tt / duration - 1)) * tt) + from;
+        }
+        
+        private static T InlineAssignHelper<T>(ref T target, T value)
+        {
+            target = value;
+            return value;
+        }
+        #endregion
+
+        #region [ 설정 ]
+        private void ZoomSlider_Scroll(object sender, int value)
+        {
+            Setting.Zoom = (float)value;
+        }
+
+        private void chkGrid_CheckedChanged(object sender, EventArgs e)
+        {
+            Setting.ShowGrid = chkGrid.Checked;
+        }
+
+        private void chkSemi_CheckedChanged(object sender, EventArgs e)
+        {
+            Setting.SemiControl = chkSemi.Checked;
+        }
+        #endregion
+        
+        #region [ 함수 ]
         private delegate void Action();
         private void UIInvoke(Action action)
         {
@@ -205,15 +354,6 @@ namespace ColorPicker.Windows
                 return c + 1;
             }
         }
-
-        private void chkGrid_CheckedChanged(object sender, EventArgs e)
-        {
-            Setting.ShowGrid = chkGrid.Checked;
-        }
-
-        private void chkSemi_CheckedChanged(object sender, EventArgs e)
-        {
-            Setting.SemiControl = chkSemi.Checked;
-        }
+        #endregion
     }
 }

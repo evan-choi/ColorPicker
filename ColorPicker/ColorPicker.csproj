@@ -91,10 +91,14 @@
     <Compile Include="Native\NativeEnums.cs" />
     <Compile Include="Native\NativeMethods.cs" />
     <Compile Include="Native\NativeStructs.cs" />
+    <Compile Include="Utils\Color\ColorType.cs" />
     <Compile Include="Utils\Color\ColorUtils.cs" />
     <Compile Include="Utils\Color\HEXColor.cs" />
     <Compile Include="Utils\Color\HSVColor.cs" />
     <Compile Include="Utils\Color\HSLColor.cs" />
+    <Compile Include="Utils\Color\IColor.cs" />
+    <Compile Include="Utils\Color\RGBColor.cs" />
+    <Compile Include="Utils\GlobalException.cs" />
     <Compile Include="Utils\ScreenCapture.cs" />
     <Compile Include="Utils\Setting.cs" />
     <Compile Include="Windows\Base\DropShadowWindow.cs">
@@ -108,6 +112,12 @@
     </Compile>
     <Compile Include="Windows\Base\SkinWindow.Designer.cs">
       <DependentUpon>SkinWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ErrorWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\ErrorWindow.Designer.cs">
+      <DependentUpon>ErrorWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Windows\MainWindow.cs">
       <SubType>Form</SubType>
@@ -131,6 +141,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\Base\ResizeWindow.resx">
       <DependentUpon>ResizeWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\ErrorWindow.resx">
+      <DependentUpon>ErrorWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
@@ -166,6 +179,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\setting.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\arrow_up.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\arrow_down.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

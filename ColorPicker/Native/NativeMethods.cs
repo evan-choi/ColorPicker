@@ -53,6 +53,10 @@ namespace ColorPicker.Native
 
         [DllImport("user32.dll")]
         public static extern bool HideCaret(IntPtr hWnd);
+
+        [return: MarshalAs(UnmanagedType.Bool)]
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool GetWindowInfo(IntPtr hwnd, ref NativeStructs.WINDOWINFO pwi);
         #endregion
 
         #region [ Gdi32 ]

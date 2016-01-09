@@ -3,12 +3,20 @@ using System.Drawing;
 
 namespace ColorPicker.Utils
 {
-    public struct HSVColor
+    public struct HSVColor : IColor
     {
 
         public float Hue { get; set; }
         public float Saturation { get; set; }
         public float Value { get; set; }
+
+        public ColorType Type
+        {
+            get
+            {
+                return ColorType.HSV;
+            }
+        }
 
         public HSVColor(Color c)
         {
@@ -50,6 +58,11 @@ namespace ColorPicker.Utils
         public static HSVColor FromColor(Color c)
         {
             return new HSVColor(c);
+        }
+
+        public override string ToString()
+        {
+            return $"HSB ({(int)Hue}, {(int)(Saturation * 100)}%, {(int)(Value * 100)}%)";
         }
     }
 }

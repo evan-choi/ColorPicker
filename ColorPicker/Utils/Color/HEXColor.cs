@@ -1,19 +1,38 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 namespace ColorPicker.Utils
 {
-    public struct HEXColor
+    public struct HEXColor : IColor
     {
         public string Html { get; set; }
 
+        public ColorType Type
+        {
+            get
+            {
+                return ColorType.HEX;
+            }
+        }
+
         public HEXColor(Color c)
         {
-            Html = $"{c.R:X2}{c.G:X2}{c.B:X2}";
+            Html = ColorTranslator.ToHtml(c);
         }
 
         public static HEXColor FromColor(Color c)
         {
             return new HEXColor(c);
+        }
+
+        public Color ToColor()
+        {
+            return ColorTranslator.FromHtml(Html);
+        }
+
+        public override string ToString()
+        {
+            return Html;
         }
     }
 }

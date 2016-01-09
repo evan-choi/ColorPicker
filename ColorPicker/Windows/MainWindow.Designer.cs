@@ -39,8 +39,14 @@
             this.ldcPlate = new ColorPicker.Controls.LDColorPlate();
             this.chkGrid = new System.Windows.Forms.CheckBox();
             this.chkSemi = new System.Windows.Forms.CheckBox();
+            this.recordView = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.extender = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.viewBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.colorBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.extender)).BeginInit();
             this.SuspendLayout();
             // 
             // viewBox
@@ -129,10 +135,10 @@
             // 
             this.ldcPlate.BackColor = System.Drawing.Color.Red;
             this.ldcPlate.BaseColor = System.Drawing.Color.White;
-            this.ldcPlate.Location = new System.Drawing.Point(269, 44);
+            this.ldcPlate.Location = new System.Drawing.Point(258, 44);
             this.ldcPlate.Name = "ldcPlate";
             this.ldcPlate.SelectedIndex = -1;
-            this.ldcPlate.Size = new System.Drawing.Size(55, 154);
+            this.ldcPlate.Size = new System.Drawing.Size(30, 154);
             this.ldcPlate.TabIndex = 18;
             // 
             // chkGrid
@@ -157,12 +163,54 @@
             this.chkSemi.UseVisualStyleBackColor = true;
             this.chkSemi.CheckedChanged += new System.EventHandler(this.chkSemi_CheckedChanged);
             // 
+            // recordView
+            // 
+            this.recordView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.recordView.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.recordView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2,
+            this.columnHeader3});
+            this.recordView.FullRowSelect = true;
+            this.recordView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.recordView.Location = new System.Drawing.Point(12, 220);
+            this.recordView.Name = "recordView";
+            this.recordView.Size = new System.Drawing.Size(276, 164);
+            this.recordView.TabIndex = 21;
+            this.recordView.UseCompatibleStateImageBehavior = false;
+            this.recordView.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Width = 25;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Width = 170;
+            // 
+            // extender
+            // 
+            this.extender.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.extender.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.extender.Image = global::ColorPicker.Properties.Resources.arrow_up;
+            this.extender.Location = new System.Drawing.Point(135, 389);
+            this.extender.Name = "extender";
+            this.extender.Size = new System.Drawing.Size(30, 7);
+            this.extender.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.extender.TabIndex = 22;
+            this.extender.TabStop = false;
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(336, 210);
+            this.ClientSize = new System.Drawing.Size(300, 400);
+            this.Controls.Add(this.extender);
+            this.Controls.Add(this.recordView);
             this.Controls.Add(this.chkSemi);
             this.Controls.Add(this.chkGrid);
             this.Controls.Add(this.ldcPlate);
@@ -173,19 +221,19 @@
             this.Controls.Add(this.zoomSlider);
             this.Controls.Add(this.colorBox);
             this.Controls.Add(this.viewBox);
-            this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IconVisible = false;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(336, 400);
-            this.MinimumSize = new System.Drawing.Size(336, 210);
+            this.MaximumSize = new System.Drawing.Size(300, 400);
+            this.MinimumSize = new System.Drawing.Size(300, 210);
             this.Name = "MainWindow";
             this.ResizeEnable = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ColorPicker";
             ((System.ComponentModel.ISupportInitialize)(this.viewBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.colorBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.extender)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -202,6 +250,11 @@
         private Controls.LDColorPlate ldcPlate;
         private System.Windows.Forms.CheckBox chkGrid;
         private System.Windows.Forms.CheckBox chkSemi;
+        private System.Windows.Forms.ListView recordView;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.PictureBox extender;
     }
 }
 

@@ -41,8 +41,11 @@ namespace ColorPicker.Controls
             }
             set
             {
-                _selectedIndex = value;
-                this.Invalidate();
+                if (!_selectedIndex.Equals(value))
+                {
+                    _selectedIndex = value;
+                    this.Invalidate();
+                }
             }
         }
 

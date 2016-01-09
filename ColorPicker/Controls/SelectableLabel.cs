@@ -14,6 +14,13 @@ namespace ColorPicker.Controls
             NativeMethods.HideCaret(this.Handle);
         }
 
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+
+            NativeMethods.HideCaret(this.Handle);
+        }
+
         public SelectableLabel()
         {
             this.BorderStyle = BorderStyle.None;

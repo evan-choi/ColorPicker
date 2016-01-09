@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ColorPicker.Native;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -11,6 +12,7 @@ namespace ColorPicker.Windows.Base
             public Rectangle Bounds { get; set; }
             public Bitmap Image { get; }
             public Action<object> Event;
+            public bool Visible { get; set; } = true;
 
             public Box(Rectangle area, Bitmap image)
             {
@@ -34,6 +36,32 @@ namespace ColorPicker.Windows.Base
                 this.Invalidate();
             }
         }
+        
+        public bool SettingBox
+        {
+            get
+            {
+                return mcBoxSetting.Visible;
+            }
+            set
+            {
+                mcBoxSetting.Visible = value;
+                this.Invalidate();
+            }
+        }
+
+        public new bool MinimizeBox
+        {
+            get
+            {
+                return mcBoxMinimize.Visible;
+            }
+            set
+            {
+                mcBoxMinimize.Visible = value;
+                this.Invalidate();
+            }
+        }
 
         private bool mActivated;
         private Box mcBoxExit = new Box(new Rectangle(0, 0, 20, 20), Properties.Resources.exit);
@@ -42,6 +70,8 @@ namespace ColorPicker.Windows.Base
 
         public SkinWindow()
         {
+            this.SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer, true);
+
             mcBoxExit.Event = new Action<object>(Exit_Click);
             mcBoxMinimize.Event = new Action<object>(Minimize_Click);
             mcBoxSetting.Event = new Action<object>(OnSetting_Click);
@@ -55,6 +85,7 @@ namespace ColorPicker.Windows.Base
         private void Minimize_Click(object obj)
         {
             this.WindowState = FormWindowState.Minimized;
+            NativeMethods.SendMessage(this.Handle, (uint)NativeEnums.WM.SYSCOMMAND, new IntPtr((int)NativeEnums.SCType.SC_MINIMIZE), IntPtr.Zero);
         }
 
         private void Exit_Click(object sender)
@@ -89,7 +120,7 @@ namespace ColorPicker.Windows.Base
             using (Font f = new Font("맑은고딕", 10))
             {
                 SizeF size = g.MeasureString(this.Text, f);
-                PointF pt = new PointF(iconPt.X + (IconVisible ? 16 : 2) + 3, CaptionHeight / 2 - size.Height / 2);
+                PointF pt = new PointF(iconPt.X + (IconVisible ? 16 : 4) + 3, CaptionHeight / 2 - size.Height / 2);
 
                 using (SolidBrush sb = new SolidBrush(Color.Black))
                 {
@@ -101,8 +132,8 @@ namespace ColorPicker.Windows.Base
         private void DrawControlBox(Graphics g)
         {
             DrawBox(g, mcBoxExit);
-            DrawBox(g, mcBoxMinimize);
-            DrawBox(g, mcBoxSetting);
+            if (MinimizeBox) DrawBox(g, mcBoxMinimize);
+            if (SettingBox) DrawBox(g, mcBoxSetting);
         }
 
         private void DrawBox(Graphics g, Box box)
@@ -164,7 +195,7 @@ namespace ColorPicker.Windows.Base
 
             foreach (Box box in boxs)
             {
-                if (IntersectWith(box.Bounds, new Point(me.X, me.Y)))
+                if (box.Visible && IntersectWith(box.Bounds, new Point(me.X, me.Y)))
                 {
                     box.Event?.Invoke(box);
                     return;
@@ -181,11 +212,21 @@ namespace ColorPicker.Windows.Base
             Point ePt = new Point(this.Width - mcBoxExit.Bounds.Width - 5, CaptionHeight / 2 - mcBoxExit.Bounds.Height / 2);
             mcBoxExit.Bounds = new Rectangle(ePt, mcBoxExit.Bounds.Size);
 
-            Point mPt = new Point(ePt.X - mcBoxMinimize.Bounds.Width - 5, CaptionHeight / 2 - mcBoxMinimize.Bounds.Height / 2);
-            mcBoxMinimize.Bounds = new Rectangle(mPt, mcBoxMinimize.Bounds.Size);
+            Point lPt = ePt;
 
-            Point sPt = new Point(mPt.X - mcBoxSetting.Bounds.Width - 5, CaptionHeight / 2 - mcBoxSetting.Bounds.Height / 2);
-            mcBoxSetting.Bounds = new Rectangle(sPt, mcBoxSetting.Bounds.Size);
+            if (MinimizeBox)
+            {
+                Point mPt = new Point(lPt.X - mcBoxMinimize.Bounds.Width - 5, CaptionHeight / 2 - mcBoxMinimize.Bounds.Height / 2);
+                mcBoxMinimize.Bounds = new Rectangle(mPt, mcBoxMinimize.Bounds.Size);
+
+                lPt = mPt;
+            }
+            
+            if (SettingBox)
+            {
+                Point sPt = new Point(lPt.X - mcBoxSetting.Bounds.Width - 5, CaptionHeight / 2 - mcBoxSetting.Bounds.Height / 2);
+                mcBoxSetting.Bounds = new Rectangle(sPt, mcBoxSetting.Bounds.Size);
+            }
 
             this.Invalidate();
         }
