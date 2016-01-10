@@ -9,7 +9,7 @@ namespace ColorPicker.Input
     public class KeyboardHook : IHook
     {
         public event KeyDownHandler OnKeyDown;
-        public delegate void KeyDownHandler(KeyboardHook sender, Keys key);
+        public delegate void KeyDownHandler(KeyboardHook sender, Keys key, ref bool throwInput);
 
         public event KeyUpHandler OnKeyUp;
         public delegate void KeyUpHandler(KeyboardHook sender, Keys key);
@@ -50,7 +50,13 @@ namespace ColorPicker.Input
 
                 if (kb.flags == NativeEnums.KBDLLHOOKSTRUCTFlags.LLKHF_DOWN)
                 {
-                    OnKeyDown?.Invoke(this, (Keys)kb.vkCode);
+                    bool throwInput = false;
+                    OnKeyDown?.Invoke(this, (Keys)kb.vkCode, ref throwInput);
+
+                    if (throwInput)
+                    {
+                        return new IntPtr(1);
+                    }
                 }
                 else
                 {

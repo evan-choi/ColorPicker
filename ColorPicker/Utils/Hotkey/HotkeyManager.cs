@@ -56,17 +56,20 @@ namespace ColorPicker.Utils.Hotkey
             }
         }
 
-        private static void KHook_OnKeyDown(KeyboardHook sender, Keys key)
+        private static void KHook_OnKeyDown(KeyboardHook sender, Keys key, ref bool throwInput)
         {
             if (!dKeys.ContainsKey(key))
             {
                 dKeys.Add(key, DateTime.Now);
             }
 
-            CheckAvailableHotKey();
+            if (CheckAvailableHotKey())
+            {
+                throwInput = true;
+            }
         }
 
-        private static void CheckAvailableHotKey()
+        private static bool CheckAvailableHotKey()
         {
             foreach (HotKey hk in hKeys.Values)
             {
@@ -81,8 +84,11 @@ namespace ColorPicker.Utils.Hotkey
                 if (cnt == arr.Count)
                 {
                     hk.Action?.Invoke();
+                    return true;
                 }
             }
+
+            return false;
         }
     }
 }

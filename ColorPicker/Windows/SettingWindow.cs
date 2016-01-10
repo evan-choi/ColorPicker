@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ColorPicker.Windows.Base;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,7 +9,7 @@ using System.Windows.Forms;
 
 namespace ColorPicker.Windows
 {
-    public partial class SettingWindow : Form
+    public partial class SettingWindow : SkinWindow
     {
         public SettingWindow()
         {

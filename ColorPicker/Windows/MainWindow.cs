@@ -15,11 +15,15 @@ namespace ColorPicker.Windows
     public partial class MainWindow : SkinWindow
     {
         #region [ 전역 변수 ]
-        private bool mPause = false;
+        // 설정
+        private Setting setting;
 
+        // 작업
+        private bool mPause = false;
         private BackgroundWorker mWorker;
         private ImageList cList;
 
+        // 확장
         private bool mExtended = false;
         private System.Timers.Timer mAnimateTimer;
         #endregion
@@ -33,7 +37,9 @@ namespace ColorPicker.Windows
             InitHotKey();
             
             GlobalException.Init();
-            
+
+            setting = new Setting();
+
             cList = new ImageList();
             cList.ImageSize = new Size(16, 16);
             recordView.SmallImageList = cList;
@@ -69,6 +75,8 @@ namespace ColorPicker.Windows
 
         private void InitToolTip()
         {
+            ToolTipManager.Init(this);
+
             ToolTipManager.SetToolTip(extender, "색상 기록을 확장합니다.");
             ToolTipManager.SetToolTip(lbl_HTML, "색상을 HEX로 표현한 값 입니다.");
             ToolTipManager.SetToolTip(lbl_RGB, "색상을 RGB로 표현한 값 입니다.");
@@ -152,10 +160,10 @@ namespace ColorPicker.Windows
             Size vhSize = new Size(vSize.Width / 2, vSize.Height / 2);
 
             // Capture Size
-            Size scSize = new Size(SelectOdd(vSize.Width / Setting.Zoom), SelectOdd(vSize.Height / Setting.Zoom));
+            Size scSize = new Size(SelectOdd(vSize.Width / setting.Zoom), SelectOdd(vSize.Height / setting.Zoom));
 
             // ZoomBuffer Size
-            Size zbSize = new Size((int)(scSize.Width * Setting.Zoom), (int)(scSize.Height * Setting.Zoom));
+            Size zbSize = new Size((int)(scSize.Width * setting.Zoom), (int)(scSize.Height * setting.Zoom));
 
             // Remain Size
             Size rmSize = zbSize - vSize;
@@ -182,13 +190,13 @@ namespace ColorPicker.Windows
                 g.DrawImage(buffer, new Rectangle(dPos, zbSize));
 
                 // Grid Processing
-                if (Setting.ShowGrid)
+                if (setting.ShowGrid)
                 {
                     using (SolidBrush sb = new SolidBrush(Color.FromArgb(100, Color.White)))
                     {
                         using (Pen p = new Pen(sb))
                         {
-                            int z = (int)Setting.Zoom;
+                            int z = (int)setting.Zoom;
 
                             for (int x = dPos.X; x <= vSize.Width; x += z)
                             {
@@ -276,6 +284,8 @@ namespace ColorPicker.Windows
         #region [ 기록 ]
         private void AddColor(IColor c)
         {
+            ToolTipManager.Show("복사됐습니다", 500);
+
             UIInvoke(() =>
             {
                 Bitmap icon = DrawColorIcon(c.ToColor());
@@ -389,20 +399,26 @@ namespace ColorPicker.Windows
         #region [ 설정 ]
         private void ZoomSlider_Scroll(object sender, int value)
         {
-            Setting.Zoom = (float)value;
+            setting.Zoom = value;
         }
 
         private void chkGrid_CheckedChanged(object sender, EventArgs e)
         {
-            Setting.ShowGrid = chkGrid.Checked;
+            setting.ShowGrid = chkGrid.Checked;
         }
 
         private void chkSemi_CheckedChanged(object sender, EventArgs e)
         {
-            Setting.SemiControl = chkSemi.Checked;
+            setting.SemiControl = chkSemi.Checked;
+        }
+
+        protected override void OnSettingOpen(object obj)
+        {
+            SettingWindow sw = new SettingWindow();
+            sw.ShowDialog();
         }
         #endregion
-        
+
         #region [ 함수 ]
         private delegate void Action();
         private void UIInvoke(Action action)

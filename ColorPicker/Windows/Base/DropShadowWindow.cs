@@ -18,7 +18,6 @@ namespace ColorPicker.Windows.Base
         
         protected override void WndProc(ref Message m)
         {
-            /*
             if (aero && DropShadowEnable && (m.Msg == NativeConstants.WM_NCPAINT))
             {
                 int attr = 2;
@@ -34,7 +33,7 @@ namespace ColorPicker.Windows.Base
 
                 NativeMethods.DwmExtendFrameIntoClientArea(this.Handle, ref margin);
             }
-            */
+
             base.WndProc(ref m);
         }
 

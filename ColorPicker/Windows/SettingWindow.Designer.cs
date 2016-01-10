@@ -28,9 +28,23 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.SuspendLayout();
+            // 
+            // SettingWindow
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Text = "SettingWindow";
+            this.ClientSize = new System.Drawing.Size(256, 309);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.IconVisible = false;
+            this.MinimizeBox = false;
+            this.Name = "SettingWindow";
+            this.ResizeEnable = false;
+            this.SettingBox = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "ColorPicker Setting";
+            this.ResumeLayout(false);
+
         }
 
         #endregion

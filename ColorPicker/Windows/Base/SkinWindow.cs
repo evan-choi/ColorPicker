@@ -74,12 +74,11 @@ namespace ColorPicker.Windows.Base
 
             mcBoxExit.Event = new Action<object>(Exit_Click);
             mcBoxMinimize.Event = new Action<object>(Minimize_Click);
-            mcBoxSetting.Event = new Action<object>(OnSetting_Click);
+            mcBoxSetting.Event = new Action<object>(OnSettingOpen);
         }
 
-        protected virtual void OnSetting_Click(object obj)
+        protected virtual void OnSettingOpen(object obj)
         {
-            MessageBox.Show("A");
         }
 
         private void Minimize_Click(object obj)
