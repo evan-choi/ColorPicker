@@ -26,10 +26,10 @@ namespace ColorPicker.Native
         public static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
         [DllImport("user32.dll")]
-        public static extern int SetWindowLong(IntPtr hWnd, NativeEnums.WindowLongFlags nIndex, NativeEnums.WindowStyles dwNewLong);
+        public static extern int SetWindowLong(IntPtr hWnd, NativeEnums.WindowLongFlags nIndex, uint dwNewLong);
 
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern NativeEnums.WindowStyles GetWindowLong(IntPtr hWnd, NativeEnums.WindowLongFlags nIndex);
+        public static extern uint GetWindowLong(IntPtr hWnd, NativeEnums.WindowLongFlags nIndex);
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern IntPtr SetWindowsHookEx(NativeEnums.HookType hookType, HookProc lpfn, IntPtr hMod, uint dwThreadId);

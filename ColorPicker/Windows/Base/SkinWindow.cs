@@ -1,5 +1,6 @@
 ﻿using ColorPicker.Native;
 using System;
+using System.Collections;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -83,13 +84,22 @@ namespace ColorPicker.Windows.Base
 
         private void Minimize_Click(object obj)
         {
-            this.WindowState = FormWindowState.Minimized;
             NativeMethods.SendMessage(this.Handle, (uint)NativeEnums.WM.SYSCOMMAND, new IntPtr((int)NativeEnums.SCType.SC_MINIMIZE), IntPtr.Zero);
         }
 
         private void Exit_Click(object sender)
         {
             this.Close();
+        }
+
+        protected virtual void OnMinimize()
+        {
+            WindowState = FormWindowState.Minimized;
+        }
+
+        protected virtual void OnRestore()
+        {
+            WindowState = FormWindowState.Normal;
         }
         
         protected override void OnPaint(PaintEventArgs e)
@@ -233,7 +243,7 @@ namespace ColorPicker.Windows.Base
         protected override void OnActivated(EventArgs e)
         {
             base.OnActivated(e);
-
+            
             mActivated = true;
             this.Invalidate();
         }
@@ -249,6 +259,27 @@ namespace ColorPicker.Windows.Base
         private bool IntersectWith(Rectangle area, Point pt)
         {
             return (pt.X >= area.X && pt.X <= area.Right) && (pt.Y >= area.Y && pt.Y <= area.Bottom);
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            NativeEnums.WM msg = (NativeEnums.WM)m.Msg;
+
+            if (msg == NativeEnums.WM.SYSCOMMAND)
+            {
+                NativeEnums.SCType sc = (NativeEnums.SCType)m.WParam.ToInt32();
+
+                if (sc == NativeEnums.SCType.SC_MINIMIZE)
+                {
+                    OnMinimize();
+                }
+                else if (sc == NativeEnums.SCType.SC_RESTORE)
+                {
+                    OnRestore();
+                }
+            }
+
+            base.WndProc(ref m);
         }
     }
 }

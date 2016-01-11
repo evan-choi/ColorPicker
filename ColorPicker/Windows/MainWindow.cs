@@ -20,6 +20,7 @@ namespace ColorPicker.Windows
 
         // 작업
         private bool mPause = false;
+        private bool mLastPause = false;
         private BackgroundWorker mWorker;
         private ImageList cList;
 
@@ -56,8 +57,11 @@ namespace ColorPicker.Windows
 
         private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
-            mWorker.CancelAsync();
-            e.Cancel = true;
+            if (mWorker.IsBusy)
+            {
+                mWorker.CancelAsync();
+                e.Cancel = true;
+            }
         }
 
         private void MainWindow_Shown(object sender, EventArgs e)
@@ -132,7 +136,7 @@ namespace ColorPicker.Windows
         #region [ 작업 ]
         private void MWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            Environment.Exit(1);
+            this.Close();
         }
 
         private void MWorkThread_DoWork(object sender, DoWorkEventArgs e)
@@ -322,6 +326,20 @@ namespace ColorPicker.Windows
             return icon;
         }
 
+        protected override void OnMinimize()
+        {
+            mLastPause = mPause;
+            mPause = true;
+
+            base.OnMinimize();
+        }
+
+        protected override void OnRestore()
+        {
+            mPause = mLastPause;
+
+            base.OnRestore();
+        }
         #endregion
 
         #region [ 윈도우 확장 ]

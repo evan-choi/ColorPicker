@@ -65,6 +65,8 @@ namespace ColorPicker.Windows.Base
         public int ResizeGrip { get; set; } = 4;
         public bool ResizeEnable { get; set; } = true;
 
+        private bool blockCP = false;
+        
         public ResizeWindow()
         {
             this.MouseDown += ResizeWindow_MouseDown;
@@ -80,10 +82,12 @@ namespace ColorPicker.Windows.Base
 
         private void SetWindowStyle()
         {
-            NativeEnums.WindowStyles wStyle = NativeMethods.GetWindowLong(this.Handle, NativeEnums.WindowLongFlags.GWL_STYLE);
-
-            wStyle |= NativeEnums.WindowStyles.WS_SYSMENU;
-            wStyle |= NativeEnums.WindowStyles.WS_MINIMIZEBOX;
+            FormBorderStyle = FormBorderStyle.Sizable;
+            
+            uint wStyle = NativeMethods.GetWindowLong(this.Handle, NativeEnums.WindowLongFlags.GWL_STYLE);
+            
+            wStyle |= (uint)NativeEnums.WindowStyles.WS_SYSMENU;
+            wStyle |= (uint)NativeEnums.WindowStyles.WS_MINIMIZEBOX;
             
             NativeMethods.SetWindowLong(this.Handle, NativeEnums.WindowLongFlags.GWL_STYLE, wStyle);
         }
@@ -113,6 +117,41 @@ namespace ColorPicker.Windows.Base
         public void Resizing(ResizeDirection direction, MouseEventArgs e)
         {
             OnResizing(direction, e);
+        }
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                
+                if (blockCP)
+                {
+                    cp.Style &= ~(int)(NativeEnums.WindowStyles.WS_BORDER | NativeEnums.WindowStyles.WS_CAPTION | NativeEnums.WindowStyles.WS_DLGFRAME | NativeEnums.WindowStyles.WS_SIZEFRAME);
+                }
+                    
+                return cp;
+            }
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            NativeEnums.WM msg = (NativeEnums.WM)m.Msg;
+
+            if (msg == NativeEnums.WM.NCCALCSIZE)
+            {
+                return;
+            }
+            else if (msg == NativeEnums.WM.WINDOWPOSCHANGED)
+            {
+                blockCP = true;
+                base.WndProc(ref m);
+                blockCP = false;
+
+                return;
+            }
+
+            base.WndProc(ref m);
         }
 
         protected virtual void OnResizing(ResizeDirection direction, MouseEventArgs e)
