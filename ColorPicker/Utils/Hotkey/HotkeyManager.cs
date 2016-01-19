@@ -28,6 +28,7 @@ namespace ColorPicker.Utils.Hotkey
 
         public static void Register(string name, HotKey hk)
         {
+            name = name.ToLower();
             hk.Name = name;
 
             if (!hKeys.ContainsKey(name))
@@ -40,8 +41,22 @@ namespace ColorPicker.Utils.Hotkey
             }
         }
 
+        public static HotKey GetHotKey(string name)
+        {
+            name = name.ToLower();
+
+            if (hKeys.ContainsKey(name))
+            {
+                return hKeys[name];
+            }
+
+            return null;
+        }
+
         public static void UnRegister(string name)
         {
+            name = name.ToLower();
+
             if (hKeys.ContainsKey(name))
             {
                 hKeys.Remove(name);
@@ -73,18 +88,31 @@ namespace ColorPicker.Utils.Hotkey
         {
             foreach (HotKey hk in hKeys.Values)
             {
-                ArrayList arr = new ArrayList(hk.Keys);
-                int cnt = 0;
-
-                foreach (Keys k in dKeys.Keys)
+                if (hk.Enabled)
                 {
-                    cnt += (arr.Contains(k) ? 1 : 0);
-                }
+                    ArrayList arr = new ArrayList(hk.Keys);
+                    int cnt = (arr.Contains(Keys.None) ? 1 : 0);
 
-                if (cnt == arr.Count)
-                {
-                    hk.Action?.Invoke();
-                    return true;
+                    foreach (Keys k in dKeys.Keys)
+                    {
+                        foreach (Keys vk in arr)
+                        {
+                            if (k == vk ||
+                                (k.ToString().Contains("ShiftKey") && vk.ToString().Contains("ShiftKey")) ||
+                                (k.ToString().Contains("ControlKey") && vk.ToString().Contains("ControlKey")) ||
+                                (k.ToString().Contains("Menu") && vk.ToString().Contains("Menu")))
+                            {
+                                cnt += 1;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (cnt == arr.Count)
+                    {
+                        hk.Action?.Invoke();
+                        return true;
+                    }
                 }
             }
 

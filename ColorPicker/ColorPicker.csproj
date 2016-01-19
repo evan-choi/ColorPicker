@@ -101,6 +101,7 @@
     <Compile Include="Utils\GlobalException.cs" />
     <Compile Include="Utils\Hotkey\HotKey.cs" />
     <Compile Include="Utils\Hotkey\HotkeyManager.cs" />
+    <Compile Include="Utils\INIFile.cs" />
     <Compile Include="Utils\ScreenCapture.cs" />
     <Compile Include="Utils\Setting.cs" />
     <Compile Include="Utils\ToolTipManager.cs" />

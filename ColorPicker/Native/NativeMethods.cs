@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace ColorPicker.Native
 {
@@ -82,6 +83,13 @@ namespace ColorPicker.Native
         #endregion
 
         #region [ Kernel32 ]
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool WritePrivateProfileString(string lpAppName, string lpKeyName, string lpString, string lpFileName);
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        public static extern uint GetPrivateProfileString(string lpAppName, string lpKeyName, string lpDefault, StringBuilder lpReturnedString, uint nSize, string lpFileName);
+
         [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Ansi)]
         public static extern IntPtr LoadLibrary([MarshalAs(UnmanagedType.LPStr)]string lpFileName);
         #endregion

@@ -16,6 +16,7 @@ namespace ColorPicker.Windows
     {
         #region [ 전역 변수 ]
         // 설정
+        private SettingWindow settingWindow;
         private Setting setting;
 
         // 작업
@@ -36,11 +37,10 @@ namespace ColorPicker.Windows
             InitWorker();
             InitToolTip();
             InitHotKey();
-            
+            InitSetting();
+
             GlobalException.Init();
-
-            setting = new Setting();
-
+            
             cList = new ImageList();
             cList.ImageSize = new Size(16, 16);
             recordView.SmallImageList = cList;
@@ -92,42 +92,79 @@ namespace ColorPicker.Windows
             ToolTipManager.SetToolTip(zoomSlider, "스크롤하여 확대를할 수 있습니다.");
         }
 
+        private void InitSetting()
+        {
+            setting = new Setting("setting.ini");
+            settingWindow = new SettingWindow(setting);
+
+            zoomSlider.Value = (int)setting.Zoom;
+            chkGrid.Checked = setting.ShowGrid;
+            chkSemi.Checked = setting.SemiControl;
+        }
+
         // 임시 핫키 세팅과 연동 필요함
         private void InitHotKey()
         {
             HotkeyManager.Register("Pause", new HotKey()
             {
-                Keys = new Keys[] { Keys.F1 },
+                Keys = new Keys[] { Keys.None, Keys.F1 },
                 Action = () =>
                 {
                     mPause = !mPause;
                 }
             });
 
-            HotkeyManager.Register("Zoom_IN", new HotKey()
+            HotkeyManager.Register("ZoomIn", new HotKey()
             {
-                Keys = new Keys[] { Keys.Add },
+                Keys = new Keys[] { Keys.None, Keys.Add },
                 Action = () =>
                 {
                     zoomSlider.Value += 1;
                 }
             });
 
-            HotkeyManager.Register("Zoom_OUT", new HotKey()
+            HotkeyManager.Register("ZoomOut", new HotKey()
             {
-                Keys = new Keys[] { Keys.Subtract },
+                Keys = new Keys[] { Keys.None, Keys.Subtract },
                 Action = () =>
                 {
                     zoomSlider.Value -= 1;
                 }
             });
 
-            HotkeyManager.Register("Color_Snapshot", new HotKey()
+            HotkeyManager.Register("RGB", new HotKey()
             {
-                Keys = new Keys[] { Keys.F2 },
+                Keys = new Keys[] { Keys.None, Keys.F2 },
                 Action = () =>
                 {
                     AddColor(RGBColor.FromColor(ldcPlate.BaseColor));
+                }
+            });
+
+            HotkeyManager.Register("HEX", new HotKey()
+            {
+                Keys = new Keys[] { Keys.None, Keys.F3 },
+                Action = () =>
+                {
+                    AddColor(HEXColor.FromColor(ldcPlate.BaseColor));
+                }
+            });
+
+            HotkeyManager.Register("HSL", new HotKey()
+            {
+                Keys = new Keys[] { Keys.None, Keys.F3 },
+                Action = () =>
+                {
+                    AddColor(HSLColor.FromColor(ldcPlate.BaseColor));
+                }
+            });
+
+            HotkeyManager.Register("HSB", new HotKey()
+            {
+                Keys = new Keys[] { Keys.None, Keys.F4 },
+                Action = () =>
+                {
+                    AddColor(HSVColor.FromColor(ldcPlate.BaseColor));
                 }
             });
         }
@@ -432,8 +469,11 @@ namespace ColorPicker.Windows
 
         protected override void OnSettingOpen(object obj)
         {
-            SettingWindow sw = new SettingWindow();
-            sw.ShowDialog();
+            bool lPause = mPause;
+
+            mPause = true;
+            settingWindow.ShowDialog();
+            mPause = lPause;
         }
         #endregion
 

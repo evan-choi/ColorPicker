@@ -48,11 +48,11 @@ namespace ColorPicker.Input
             {
                 var kb = (NativeStructs.KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(NativeStructs.KBDLLHOOKSTRUCT));
 
-                if (kb.flags == NativeEnums.KBDLLHOOKSTRUCTFlags.LLKHF_DOWN)
+                if (kb.flags == NativeEnums.KBDLLHOOKSTRUCTFlags.LLKHF_DOWN || kb.flags == NativeEnums.KBDLLHOOKSTRUCTFlags.LLKHF_ALTDOWN)
                 {
                     bool throwInput = false;
                     OnKeyDown?.Invoke(this, (Keys)kb.vkCode, ref throwInput);
-
+                    
                     if (throwInput)
                     {
                         return new IntPtr(1);

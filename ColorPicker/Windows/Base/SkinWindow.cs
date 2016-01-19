@@ -200,7 +200,7 @@ namespace ColorPicker.Windows.Base
         {
             MouseEventArgs me = (MouseEventArgs)e;
 
-            Box[] boxs = { mcBoxExit, mcBoxMinimize, mcBoxSetting };
+            Box[] boxs = { mcBoxExit, mcBoxMinimize };
 
             foreach (Box box in boxs)
             {
@@ -212,6 +212,16 @@ namespace ColorPicker.Windows.Base
             }
 
             base.OnClick(e);
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            if (mcBoxSetting.Visible && IntersectWith(mcBoxSetting.Bounds, new Point(e.X, e.Y)))
+            {
+                mcBoxSetting.Event?.Invoke(mcBoxSetting);
+            }
+
+            base.OnMouseDown(e);
         }
 
         protected override void OnSizeChanged(EventArgs e)
