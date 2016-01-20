@@ -1,8 +1,8 @@
 ﻿using ColorPicker.Utils.Hotkey;
+
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace ColorPicker.Utils
 {
@@ -10,7 +10,12 @@ namespace ColorPicker.Utils
     {
         private const string SECTION_GENERAL = "General";
         private const string SECTION_HOTKEY = "Hotkey";
+        private const string SECTION_PALETTE = "Palette";
 
+        public event UpdatedHandler Updated;
+        public delegate void UpdatedHandler(object sender);
+
+        #region [ General ]
         private float _zoom = 1f;
         public float Zoom
         {
@@ -52,6 +57,21 @@ namespace ColorPicker.Utils
                 INI?.SetValue(SECTION_GENERAL, nameof(SemiControl), _semiControl);
             }
         }
+
+        private string[] _palettes = new string[] { };
+        public string[] PaletteList
+        {
+            get
+            {
+                return _palettes;
+            }
+            set
+            {
+                _palettes = value;
+                INI?.SetValue(SECTION_PALETTE, nameof(PaletteList), string.Join(",", value));
+            }
+        }
+        #endregion
 
         #region [ Hotkey ]
         private HotKey _HkPause;
@@ -166,6 +186,29 @@ namespace ColorPicker.Utils
         {
             INI = new INIFile(fileName);
 
+            var fsw = new FileSystemWatcher();
+            fsw.Path = INI.FileInfo.DirectoryName;
+            fsw.Filter = INI.FileInfo.Name;
+            fsw.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite;
+            fsw.Changed += Fsw_Changed;
+            fsw.EnableRaisingEvents = true;
+
+            Update();
+        }
+        
+        private void Fsw_Changed(object sender, FileSystemEventArgs e)
+        {
+            TimeSpan delta = DateTime.Now - INI.LastUpdate;
+
+            if (Math.Abs(delta.TotalMilliseconds) >= 800)
+            {
+                Update();
+                Updated?.Invoke(this);
+            }
+        }
+
+        private void Update()
+        {
             LoadHotkey(out _HkPause, "Pause");
             LoadHotkey(out _HkRgb, "RGB");
             LoadHotkey(out _HkHex, "HEX");
@@ -174,9 +217,10 @@ namespace ColorPicker.Utils
             LoadHotkey(out _HkZoomIn, "ZoomIn");
             LoadHotkey(out _HkZoomOut, "ZoomOut");
 
-            Zoom = INI.GetValue(SECTION_GENERAL, nameof(Zoom), _zoom);
+            Zoom = Math.Max(1, INI.GetValue(SECTION_GENERAL, nameof(Zoom), _zoom));
             ShowGrid = INI.GetValue(SECTION_GENERAL, nameof(ShowGrid), _showGrid);
             SemiControl = INI.GetValue(SECTION_GENERAL, nameof(SemiControl), _semiControl);
+            PaletteList = Regex.Split(INI.GetValue(SECTION_PALETTE, nameof(PaletteList), ""), ",");
         }
 
         private void LoadHotkey(out HotKey hk, string name)

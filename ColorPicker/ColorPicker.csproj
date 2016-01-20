@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -30,6 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet />
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>ColorPicker.Program</StartupObject>
@@ -41,23 +43,36 @@
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>
+    </CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Debug\</OutputPath>
+    <CodeAnalysisRuleSet />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Release\</OutputPath>
+    <CodeAnalysisRuleSet />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release86|x86'">
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Release86\</OutputPath>
     <Optimize>false</Optimize>
+    <CodeAnalysisRuleSet />
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\ICON.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>false</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -98,10 +113,17 @@
     <Compile Include="Utils\Color\HSLColor.cs" />
     <Compile Include="Utils\Color\IColor.cs" />
     <Compile Include="Utils\Color\RGBColor.cs" />
+    <Compile Include="Utils\CrossThreading.cs" />
     <Compile Include="Utils\GlobalException.cs" />
     <Compile Include="Utils\Hotkey\HotKey.cs" />
     <Compile Include="Utils\Hotkey\HotkeyManager.cs" />
     <Compile Include="Utils\INIFile.cs" />
+    <Compile Include="Utils\ListViewHelper.cs" />
+    <Compile Include="Utils\Palette\Palette.cs" />
+    <Compile Include="Utils\Palette\PaletteItem.cs" />
+    <Compile Include="Utils\Palette\PaletteManager.cs" />
+    <Compile Include="Utils\PreventApplication.cs" />
+    <Compile Include="Utils\PrincipalHelper.cs" />
     <Compile Include="Utils\ScreenCapture.cs" />
     <Compile Include="Utils\Setting.cs" />
     <Compile Include="Utils\ToolTipManager.cs" />
@@ -122,6 +144,12 @@
     </Compile>
     <Compile Include="Windows\ErrorWindow.Designer.cs">
       <DependentUpon>ErrorWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\InputWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\InputWindow.Designer.cs">
+      <DependentUpon>InputWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Windows\MainWindow.cs">
       <SubType>Form</SubType>
@@ -149,6 +177,9 @@
     <EmbeddedResource Include="Windows\ErrorWindow.resx">
       <DependentUpon>ErrorWindow.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Windows\InputWindow.resx">
+      <DependentUpon>InputWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Windows\MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </EmbeddedResource>
@@ -165,6 +196,7 @@
     <EmbeddedResource Include="Windows\SettingWindow.resx">
       <DependentUpon>SettingWindow.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

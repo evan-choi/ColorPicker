@@ -5,7 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
@@ -45,15 +47,27 @@ namespace ColorPicker.Windows
         {
             InitializeComponent();
 
+            setting.Updated += (s) => {
+                SetSetting(setting);
+            };
+
+            SetSetting(setting);
+        }
+
+        private void SetSetting(Setting setting)
+        {
             this.Setting = setting;
 
-            foreach (var pi in typeof(Setting).GetProperties())
+            if (pCache.Count == 0)
             {
-                if (pi.Name.StartsWith("Hk"))
+                foreach (var pi in typeof(Setting).GetProperties())
                 {
-                    string dKey = pi.Name.Substring(2).ToLower();
+                    if (pi.Name.StartsWith("Hk"))
+                    {
+                        string dKey = pi.Name.Substring(2).ToLower();
 
-                    pCache.Add(dKey, pi);
+                        pCache.Add(dKey, pi);
+                    }
                 }
             }
 
@@ -89,38 +103,41 @@ namespace ColorPicker.Windows
                         cache.Add(dKey, new List<ComboBox>());
                     }
 
-                    cache[dKey].Add(cb);
-
-                    foreach (var key in data)
+                    if (cb.Items.Count == 0)
                     {
-                        cb.Items.Add(key);
+                        cache[dKey].Add(cb);
+
+                        foreach (var key in data)
+                        {
+                            cb.Items.Add(key);
+                        }
+
+                        cb.SelectedIndexChanged += (s, e) =>
+                        {
+                            if (isBase)
+                            {
+                                hk.Keys[0] = BaseKeys[cb.SelectedIndex];
+                            }
+                            else
+                            {
+                                hk.Keys[1] = SubKeys[cb.SelectedIndex];
+                            }
+
+                            pCache[dKey].SetValue(setting, hk, null);
+                        };
+
+                        cb.Enabled = hk.Enabled;
                     }
 
                     cb.SelectedIndex = Array.IndexOf((isBase ? BaseKeys : SubKeys), hk.Keys[isBase ? 0 : 1]);
-
-                    cb.SelectedIndexChanged += (s, e) =>
-                    {
-                        if (isBase)
-                        {
-                            hk.Keys[0] = BaseKeys[cb.SelectedIndex];
-                        }
-                        else
-                        {
-                            hk.Keys[1] = SubKeys[cb.SelectedIndex];
-                        }
-
-                        pCache[dKey].SetValue(setting, hk, null);
-                    };
-
-                    cb.Enabled = false;
                 }
                 else if (c.GetType() == typeof(CheckBox))
                 {
                     CheckBox chk = (CheckBox)c;
                     string dKey = chk.Name.Substring(3).ToLower();
                     HotKey hk = HotkeyManager.GetHotKey(dKey);
-                    
-                    chk.CheckedChanged += (s, e)=>
+
+                    chk.CheckedChanged += (s, e) =>
                     {
                         foreach (ComboBox b in cache[dKey])
                         {
@@ -135,6 +152,11 @@ namespace ColorPicker.Windows
                     chk.Checked = hk.Enabled;
                 }
             }
+        }
+        
+        private void lLbl_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("setting.ini");
         }
     }
 }

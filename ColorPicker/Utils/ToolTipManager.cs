@@ -25,7 +25,7 @@ namespace ColorPicker.Utils
         {
             Point mPt = Mouse.Position;
 
-            tip.Show(content, Parent, mPt.X - Parent.Left, mPt.Y - Parent.Top, duration);
+            tip.Show(content, Parent, mPt.X - Parent.Left + 1, mPt.Y - Parent.Top + 1, duration);
         }
     }
 }

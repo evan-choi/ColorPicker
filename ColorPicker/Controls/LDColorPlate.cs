@@ -4,9 +4,6 @@ using System.Windows.Forms;
 
 using ColorPicker.Utils;
 
-/// <summary>
-/// Lighter / Darker Color Plate
-/// </summary>
 namespace ColorPicker.Controls
 {
     public partial class LDColorPlate : UserControl
@@ -27,6 +24,7 @@ namespace ColorPicker.Controls
                 _selectedIndex = -1;
 
                 _bColor = value;
+                _selectedColor = value;
 
                 this.Invalidate();
             }
@@ -46,6 +44,15 @@ namespace ColorPicker.Controls
                     _selectedIndex = value;
                     this.Invalidate();
                 }
+            }
+        }
+
+        private Color _selectedColor;
+        public Color SelectedColor
+        {
+            get
+            {
+                return _selectedColor;
             }
         }
 
@@ -154,7 +161,8 @@ namespace ColorPicker.Controls
 
                 oHlc.Lightness = 1f - (SelectedIndex * 5f) / 100;
 
-                SelectedColorChanged?.Invoke(this, oHlc.ToColor());
+                _selectedColor = oHlc.ToColor();
+                SelectedColorChanged?.Invoke(this, _selectedColor);
             }
         }
     }

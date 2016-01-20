@@ -30,6 +30,8 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ErrorWindow));
             this.errorBox = new ColorPicker.Controls.SelectableLabel();
+            this.btnForce = new System.Windows.Forms.Button();
+            this.btnOk = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // errorBox
@@ -44,9 +46,31 @@
             this.errorBox.Name = "errorBox";
             this.errorBox.ReadOnly = true;
             this.errorBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.errorBox.Size = new System.Drawing.Size(472, 225);
+            this.errorBox.Size = new System.Drawing.Size(472, 198);
             this.errorBox.TabIndex = 0;
             this.errorBox.TabStop = false;
+            // 
+            // btnForce
+            // 
+            this.btnForce.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnForce.Location = new System.Drawing.Point(360, 239);
+            this.btnForce.Name = "btnForce";
+            this.btnForce.Size = new System.Drawing.Size(59, 21);
+            this.btnForce.TabIndex = 1;
+            this.btnForce.Text = "무시";
+            this.btnForce.UseVisualStyleBackColor = true;
+            this.btnForce.Click += new System.EventHandler(this.btnForce_Click);
+            // 
+            // btnOk
+            // 
+            this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnOk.Location = new System.Drawing.Point(425, 239);
+            this.btnOk.Name = "btnOk";
+            this.btnOk.Size = new System.Drawing.Size(59, 21);
+            this.btnOk.TabIndex = 2;
+            this.btnOk.Text = "확인";
+            this.btnOk.UseVisualStyleBackColor = true;
+            this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
             // 
             // ErrorWindow
             // 
@@ -54,7 +78,10 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(496, 272);
+            this.Controls.Add(this.btnOk);
+            this.Controls.Add(this.btnForce);
             this.Controls.Add(this.errorBox);
+            this.EdgeColor = System.Drawing.Color.Red;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IconVisible = false;
@@ -64,6 +91,7 @@
             this.SettingBox = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Error";
+            this.TitleColor = System.Drawing.Color.Red;
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -72,6 +100,8 @@
         #endregion
 
         private Controls.SelectableLabel errorBox;
+        private System.Windows.Forms.Button btnForce;
+        private System.Windows.Forms.Button btnOk;
     }
 }
 

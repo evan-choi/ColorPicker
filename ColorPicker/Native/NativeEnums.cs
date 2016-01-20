@@ -485,7 +485,6 @@ namespace ColorPicker.Native
             CAPTUREBLT = 0x40000000
         }
 
-
         [Flags]
         public enum KBDLLHOOKSTRUCTFlags : uint
         {
@@ -494,6 +493,38 @@ namespace ColorPicker.Native
             LLKHF_INJECTED = 0x10,
             LLKHF_ALTDOWN = 0x20,
             LLKHF_UP = 0x80,
+        }
+
+        public enum ListViewExtendedStyles
+        {
+            GridLines = 0x00000001,
+            SubItemImages = 0x00000002,
+            CheckBoxes = 0x00000004,
+            TrackSelect = 0x00000008,
+            HeaderDragDrop = 0x00000010,
+            FullRowSelect = 0x00000020,
+            OneClickActivate = 0x00000040,
+            TwoClickActivate = 0x00000080,
+            FlatsB = 0x00000100,
+            Regional = 0x00000200,
+            InfoTip = 0x00000400,
+            UnderlineHot = 0x00000800,
+            UnderlineCold = 0x00001000,
+            MultilWorkAreas = 0x00002000,
+            LabelTip = 0x00004000,
+            BorderSelect = 0x00008000,
+            DoubleBuffer = 0x00010000,
+            HideLabels = 0x00020000,
+            SingleRow = 0x00040000,
+            SnapToGrid = 0x00080000,
+            SimpleSelect = 0x00100000
+        }
+
+        public enum ListViewMessages
+        {
+            First = 0x1000,
+            SetExtendedStyle = (First + 54),
+            GetExtendedStyle = (First + 55),
         }
     }
 }

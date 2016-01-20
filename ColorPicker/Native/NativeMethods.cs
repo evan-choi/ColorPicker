@@ -53,6 +53,10 @@ namespace ColorPicker.Native
         public static extern bool GetCursorPos(out NativeStructs.POINT lpPoint);
 
         [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool SetCursorPos(int X, int Y);
+        
+        [DllImport("user32.dll")]
         public static extern bool HideCaret(IntPtr hWnd);
 
         [return: MarshalAs(UnmanagedType.Bool)]

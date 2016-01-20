@@ -1,16 +1,17 @@
 ﻿using static ColorPicker.Native.NativeMethods;
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
-
+using System.Threading;
+using System.Security.Permissions;
 
 namespace ColorPicker.Utils
 {
     public class INIFile
     {
         public FileInfo FileInfo;
+        public DateTime LastUpdate;
 
         public INIFile(string fileName)
         {
@@ -20,6 +21,8 @@ namespace ColorPicker.Utils
             {
                 FileInfo.Create().Close();
             }
+
+            LastUpdate = DateTime.Now;
         }
 
         public T GetValue<T>(string category, string property, T defaultValue = default(T))
@@ -39,14 +42,19 @@ namespace ColorPicker.Utils
 
         public bool SetValue<T>(string category, string property, T value)
         {
-            return WritePrivateProfileString(category, property, value.ToString(), FileInfo.FullName);
+            bool r = WritePrivateProfileString(category, property, value.ToString(), FileInfo.FullName);
+            
+            LastUpdate = DateTime.Now;
+
+            return r;
         }
 
         private string GetValue(string category, string property, string defaultValue = "")
         {
-            StringBuilder v = new StringBuilder(255);
-
+            StringBuilder v = new StringBuilder(255 * 255);
             GetPrivateProfileString(category, property, defaultValue, v, (uint)v.Capacity, FileInfo.FullName);
+
+            LastUpdate = DateTime.Now;
 
             return v.ToString();
         }

@@ -47,15 +47,17 @@ namespace ColorPicker.Input
             if (code >= 0)
             {
                 var kb = (NativeStructs.KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(NativeStructs.KBDLLHOOKSTRUCT));
-
-                if (kb.flags == NativeEnums.KBDLLHOOKSTRUCTFlags.LLKHF_DOWN || kb.flags == NativeEnums.KBDLLHOOKSTRUCTFlags.LLKHF_ALTDOWN)
+                
+                if (kb.flags == NativeEnums.KBDLLHOOKSTRUCTFlags.LLKHF_DOWN || 
+                    kb.flags == NativeEnums.KBDLLHOOKSTRUCTFlags.LLKHF_ALTDOWN ||
+                    kb.flags == NativeEnums.KBDLLHOOKSTRUCTFlags.LLKHF_EXTENDED)
                 {
                     bool throwInput = false;
                     OnKeyDown?.Invoke(this, (Keys)kb.vkCode, ref throwInput);
                     
                     if (throwInput)
                     {
-                        return new IntPtr(1);
+                        //return new IntPtr(1);
                     }
                 }
                 else
@@ -69,7 +71,7 @@ namespace ColorPicker.Input
 
         public bool UnHook()
         {
-            return false;
+            return NativeMethods.UnhookWindowsHookEx(mHookPtr);
         }
     }
 }

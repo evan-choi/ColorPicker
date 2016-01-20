@@ -10,9 +10,11 @@ namespace ColorPicker.Utils.Hotkey
 
     public static class HotkeyManager
     {
-        private static KeyboardHook kHook;
+        internal static KeyboardHook kHook;
         private static Dictionary<Keys, DateTime> dKeys;
         private static Dictionary<string, HotKey> hKeys;
+
+        public static bool Enabled { get; set; } = true;
 
         static HotkeyManager()
         {
@@ -26,6 +28,16 @@ namespace ColorPicker.Utils.Hotkey
             kHook.Hook();
         }
 
+        public static bool IsDowned(Keys key)
+        {
+            return dKeys.ContainsKey(key);
+        }
+
+        public static bool IsShift()
+        {
+            return (IsDowned(Keys.Shift) || IsDowned(Keys.ShiftKey) || IsDowned(Keys.LShiftKey) || IsDowned(Keys.RShiftKey));
+        }
+        
         public static void Register(string name, HotKey hk)
         {
             name = name.ToLower();
@@ -86,32 +98,35 @@ namespace ColorPicker.Utils.Hotkey
 
         private static bool CheckAvailableHotKey()
         {
-            foreach (HotKey hk in hKeys.Values)
+            if (Enabled)
             {
-                if (hk.Enabled)
+                foreach (HotKey hk in hKeys.Values)
                 {
-                    ArrayList arr = new ArrayList(hk.Keys);
-                    int cnt = (arr.Contains(Keys.None) ? 1 : 0);
-
-                    foreach (Keys k in dKeys.Keys)
+                    if (hk.Enabled)
                     {
-                        foreach (Keys vk in arr)
+                        ArrayList arr = new ArrayList(hk.Keys);
+                        int cnt = (arr.Contains(Keys.None) ? 1 : 0);
+
+                        foreach (Keys k in dKeys.Keys)
                         {
-                            if (k == vk ||
-                                (k.ToString().Contains("ShiftKey") && vk.ToString().Contains("ShiftKey")) ||
-                                (k.ToString().Contains("ControlKey") && vk.ToString().Contains("ControlKey")) ||
-                                (k.ToString().Contains("Menu") && vk.ToString().Contains("Menu")))
+                            foreach (Keys vk in arr)
                             {
-                                cnt += 1;
-                                break;
+                                if (k == vk ||
+                                    (k.ToString().Contains("ShiftKey") && vk.ToString().Contains("ShiftKey")) ||
+                                    (k.ToString().Contains("ControlKey") && vk.ToString().Contains("ControlKey")) ||
+                                    (k.ToString().Contains("Menu") && vk.ToString().Contains("Menu")))
+                                {
+                                    cnt += 1;
+                                    break;
+                                }
                             }
                         }
-                    }
 
-                    if (cnt == arr.Count)
-                    {
-                        hk.Action?.Invoke();
-                        return true;
+                        if (cnt == arr.Count)
+                        {
+                            hk.Action?.Invoke();
+                            return true;
+                        }
                     }
                 }
             }

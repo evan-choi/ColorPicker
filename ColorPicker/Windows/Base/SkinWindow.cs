@@ -22,6 +22,34 @@ namespace ColorPicker.Windows.Base
             }
         }
         
+        private Color _edgeColor = Color.FromArgb(41, 128, 185);
+        public Color EdgeColor
+        {
+            get
+            {
+                return _edgeColor;
+            }
+            set
+            {
+                _edgeColor = value;
+                this.Invalidate();
+            }
+        }
+
+        private Color _titleColor = Color.Black;
+        public Color TitleColor
+        {
+            get
+            {
+                return _titleColor;
+            }
+            set
+            {
+                _titleColor = value;
+                this.Invalidate();
+            }
+        }
+
         public int CaptionHeight { get; set; } = 30;
 
         private bool _iconVisible = true;
@@ -64,7 +92,15 @@ namespace ColorPicker.Windows.Base
             }
         }
 
-        private bool mActivated;
+        private bool _activated;
+        public bool IsActivated
+        {
+            get
+            {
+                return _activated;
+            }
+        }
+        
         private Box mcBoxExit = new Box(new Rectangle(0, 0, 20, 20), Properties.Resources.exit);
         private Box mcBoxMinimize = new Box(new Rectangle(0, 0, 20, 20), Properties.Resources.minimize);
         private Box mcBoxSetting = new Box(new Rectangle(0, 0, 20, 20), Properties.Resources.setting);
@@ -128,10 +164,17 @@ namespace ColorPicker.Windows.Base
 
             using (Font f = new Font("맑은고딕", 10))
             {
+                Color c = TitleColor;
+
+                if (!_activated)
+                {
+                    c = Color.FromArgb(150, 150, 150);
+                }
+
                 SizeF size = g.MeasureString(this.Text, f);
                 PointF pt = new PointF(iconPt.X + (IconVisible ? 16 : 4) + 3, CaptionHeight / 2 - size.Height / 2);
 
-                using (SolidBrush sb = new SolidBrush(Color.Black))
+                using (SolidBrush sb = new SolidBrush(c))
                 {
                     g.DrawString(this.Text, f, sb, pt);
                 }
@@ -153,9 +196,9 @@ namespace ColorPicker.Windows.Base
 
         private void DrawEdge(Graphics g)
         {
-            Color c = Color.FromArgb(41, 128, 185);
+            Color c = EdgeColor;
 
-            if (!mActivated)
+            if (!_activated)
             {
                 c = Color.FromArgb(190, 190, 190);
             }
@@ -254,7 +297,7 @@ namespace ColorPicker.Windows.Base
         {
             base.OnActivated(e);
             
-            mActivated = true;
+            _activated = true;
             this.Invalidate();
         }
 
@@ -262,11 +305,11 @@ namespace ColorPicker.Windows.Base
         {
             base.OnDeactivate(e);
 
-            mActivated = false;
+            _activated = false;
             this.Invalidate();
         }
 
-        private bool IntersectWith(Rectangle area, Point pt)
+        internal static bool IntersectWith(Rectangle area, Point pt)
         {
             return (pt.X >= area.X && pt.X <= area.Right) && (pt.Y >= area.Y && pt.Y <= area.Bottom);
         }
