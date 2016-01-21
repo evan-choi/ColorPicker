@@ -298,6 +298,7 @@
             this.Name = "SettingWindow";
             this.ResizeEnable = false;
             this.SettingBox = false;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ColorPicker Setting";
             this.ResumeLayout(false);

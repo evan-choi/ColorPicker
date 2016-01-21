@@ -59,6 +59,7 @@ namespace ColorPicker.Windows
             InitHotKey();
             InitPaletteMenu();
 
+            this.Text += $"  {ProductVersion}";
             cList = new ImageList();
             cList.ImageSize = new Size(16, 16);
             recordView.SmallImageList = cList;
