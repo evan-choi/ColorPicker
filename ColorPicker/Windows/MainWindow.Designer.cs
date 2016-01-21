@@ -79,6 +79,7 @@
             // lvPalette
             // 
             this.lvPalette.Activation = System.Windows.Forms.ItemActivation.OneClick;
+            this.lvPalette.AllowDrop = true;
             this.lvPalette.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.lvPalette.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -93,6 +94,8 @@
             this.lvPalette.UseCompatibleStateImageBehavior = false;
             this.lvPalette.View = System.Windows.Forms.View.Details;
             this.lvPalette.SelectedIndexChanged += new System.EventHandler(this.lvPalette_SelectedIndexChanged);
+            this.lvPalette.DragDrop += new System.Windows.Forms.DragEventHandler(this.lvPalette_DragDrop);
+            this.lvPalette.DragEnter += new System.Windows.Forms.DragEventHandler(this.lvPalette_DragEnter);
             this.lvPalette.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lvPalette_MouseClick);
             // 
             // columnHeader4

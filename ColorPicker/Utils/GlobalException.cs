@@ -28,7 +28,7 @@ namespace ColorPicker.Utils
 
         private static void ExceptionHandling(Exception e)
         {
-#if DEBUG
+#if !DEBUG
             if (e.GetType() == typeof(UnauthorizedAccessException))
             {
                 PreventApplication.UnRegister();

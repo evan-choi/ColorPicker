@@ -897,5 +897,52 @@ namespace ColorPicker.Windows
                 ldcPlate.BaseColor = c.ToColor();
             }
         }
+
+        private void lvPalette_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                
+                foreach (var f in files)
+                {
+                    if (Path.GetExtension(f).ToLower() == ".p")
+                    {
+                        e.Effect = DragDropEffects.Copy;
+                    }
+                    else
+                    {
+                        e.Effect = DragDropEffects.None;
+                    }
+                }
+            }
+        }
+
+        private void lvPalette_DragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                foreach (var f in files)
+                {
+                    if (Path.GetExtension(f).ToLower() == ".p")
+                    {
+                        if (CheckPalette(Path.GetFileNameWithoutExtension(f).ToLower()))
+                        {
+                            PaletteItem p = new PaletteItem(f);
+                            p.Load();
+                            CreatePaletteColorItems(p);
+
+                            PaletteManager.AddPalette(p);
+
+                            lvPalette.Items.Add(p.Name);
+                        }
+                    }
+                }
+
+                SavePaletteList();
+            }
+        }
     }
 }
