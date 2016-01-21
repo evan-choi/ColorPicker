@@ -730,7 +730,7 @@ namespace ColorPicker.Windows
 
         private void SelectPalette(int idx)
         {
-            if (idx < 0) return;
+            if (idx < 0 || idx >= lvPalette.Items.Count) return;
 
             if (selectedPalette >= 0 && selectedPalette < lvPalette.Items.Count) lvPalette.Items[selectedPalette].ForeColor = Color.Black;
             lvPalette.Items[idx].ForeColor = Color.FromArgb(41, 128, 185);
